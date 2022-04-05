@@ -35,7 +35,7 @@ terraform {
   required_providers {
     aws = {
       source = "hashicorp/aws"
-      version = "3.69.0"
+      version = "4.8.0"
     }
   }
 }
@@ -51,7 +51,6 @@ resource "aws_instance" "tf-ec2" {
 
 resource "aws_s3_bucket" "tf-s3" {
   bucket = "oliver-tf-test-bucket-addwhateveryouwant"
-  acl    = "private"
 }
 ```
 
@@ -233,7 +232,6 @@ resource "aws_instance" "tf-ec2" {
 resource "aws_s3_bucket" "tf-s3" {
   bucket = "oliver-tf-bucket-addwhateveryouwant-new"
   #bucket = "oliver-tf-bucket-addwhateveryouwant"
-  acl    = "private"
 }
 ```
 
@@ -301,7 +299,7 @@ terraform {
   required_providers {
     aws = {
       source = "hashicorp/aws"
-      version = "3.69.0"
+      version = "4.8.0"
     }
   }
 }
@@ -333,7 +331,6 @@ variable "s3_bucket_name" {
 
 resource "aws_s3_bucket" "tf-s3" {
   bucket = var.s3_bucket_name
-  acl    = "private"
 }
 
 output "tf-example-public_ip" {
@@ -474,7 +471,6 @@ resource "aws_instance" "tf-ec2" {
 
 resource "aws_s3_bucket" "tf-s3" {
   bucket = var.s3_bucket_name
-  acl    = "private"
   tags = {
     Name = "${local.mytag}-come from locals"
   }
@@ -514,7 +510,6 @@ variable "num_of_buckets" {
 ```bash
 resource "aws_s3_bucket" "tf-s3" {
   bucket = "${var.s3_bucket_name}-${count.index}"
-  acl    = "private"
   count = var.num_of_buckets
 }
 ```
@@ -546,7 +541,7 @@ terraform apply
 ```bash
 resource "aws_s3_bucket" "tf-s3" {
   bucket = "${var.s3_bucket_name}-${count.index}"
-  acl    = "private"
+
   # count = var.num_of_buckets
   count = var.num_of_buckets != 0 ? var.num_of_buckets : 3
 }
@@ -573,7 +568,6 @@ variable "users" {
 ```bash
 resource "aws_s3_bucket" "tf-s3" {
   # bucket = "var.s3_bucket_name.${count.index}"
-  acl = "private"
   # count = var.num_of_buckets
   # count = var.num_of_buckets != 0 ? var.num_of_buckets : 1
   for_each = toset(var.users)
