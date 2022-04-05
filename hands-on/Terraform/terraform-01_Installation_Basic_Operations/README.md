@@ -131,7 +131,7 @@ terraform {
   required_providers {
     aws = {
       source = "hashicorp/aws"
-      version = "3.69.0"
+      version = "4.8.0"
     }
   }
 }
@@ -144,7 +144,7 @@ provider "aws" {
 }
 
 resource "aws_instance" "tf-ec2" {
-  ami           = "ami-0ed9277fb7eb570c9"
+  ami           = "ami-0c02fb55956c7d316"
   instance_type = "t2.micro"
   tags = {
     "Name" = "created-by-tf"
@@ -351,7 +351,7 @@ terraform {
   required_providers {
     aws = {
       source = "hashicorp/aws"
-      version = "3.69.0"
+      version = "4.8.0"
     }
   }
 }
@@ -371,7 +371,6 @@ resource "aws_instance" "tf-ec2" {
 
 resource "aws_s3_bucket" "tf-s3" {
   bucket = "oliver-tf-test-bucket-addwhateveryouwant"
-  acl    = "private"
 }
 ```
 
@@ -405,7 +404,7 @@ terraform apply -auto-approve
 ```bash
 terraform plan -out=justs3
 ```
-- Now we have just an S3 bucket in justs3. Check that `terraform.tfstate` file has both ec2 and s3 bucket (real infrastructure). If we apply justs3 file it will delete the EC2 instance and modify the tfstate file. You can save your plans with -out flag.
+- Now we have just an S3 bucket in justs3. Check that `terraform.tfstate` file has both ec2 and s3 bucket (real infrastructure). If we apply justs3 file it will delete the EC2 instance and modify the tfstate file. You can save your plans with -out flag. First, you can uncomment the EC2 instance.
 
 ```bash
 terraform apply justs3
