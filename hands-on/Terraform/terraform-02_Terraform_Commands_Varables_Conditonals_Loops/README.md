@@ -54,7 +54,7 @@ resource "aws_s3_bucket" "tf-s3" {
 }
 ```
 
-- Run the command `terraform plan` and `terraform apply`.
+- Run the command `terraform init` and `terraform plan` and `terraform apply`.
 
 ```bash
 terraform plan
