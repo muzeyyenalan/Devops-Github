@@ -43,13 +43,14 @@ data "aws_ami" "tf_ami" {
 
 resource "aws_instance" "tf-ec2" {
   ami           = data.aws_ami.tf_ami.id
-  instance_type = var.ec2-type
+  instance_type = var.ec2_type
   key_name      = "mk"
   tags = {
     Name = "${local.mytag}-this is from my-ami"
   }
 }
 ```
+https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/virtualization_types.html
 
 ```bash
 terraform plan

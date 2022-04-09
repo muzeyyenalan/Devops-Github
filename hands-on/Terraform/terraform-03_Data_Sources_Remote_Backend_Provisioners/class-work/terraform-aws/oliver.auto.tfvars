@@ -1,0 +1,1 @@
+s3_bucket_name = "murat-auto-tfvar-bucket"

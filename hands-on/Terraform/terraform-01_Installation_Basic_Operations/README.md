@@ -407,7 +407,8 @@ terraform plan -out=justs3
 - Now we have just an S3 bucket in justs3. Check that `terraform.tfstate` file has both ec2 and s3 bucket (real infrastructure). If we apply justs3 file it will delete the EC2 instance and modify the tfstate file. You can save your plans with -out flag. First, you can uncomment the EC2 instance.
 
 ```bash
-terraform apply justs3
+ls -al
+ justs3
 ```
 
 ### Destroy

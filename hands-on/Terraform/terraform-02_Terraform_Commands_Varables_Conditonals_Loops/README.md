@@ -57,6 +57,9 @@ resource "aws_s3_bucket" "tf-s3" {
 - Run the command `terraform init` and `terraform plan` and `terraform apply`.
 
 ```bash
+
+terraform init
+
 terraform plan
 
 terraform apply
@@ -352,6 +355,8 @@ terraform apply
 
 - Create a file name `variables.tf`. Take the variables from `main.tf` file and paste into "variables.tf". 
 
+- Create a file name `output.tf`. Take the outputs from `main.tf` file and paste into "output.tf". 
+
 ```bash
 terraform validate
 
@@ -437,11 +442,11 @@ terraform plan
 
 - Terraform loads variables in the following order:
 
-  - Any -var and -var-file options on the command line, in the order they are provided.
-  - Any *.auto.tfvars or *.auto.tfvars.json files, processed in lexical order of their filenames.
-  - The terraform.tfvars.json file, if present.
-  - The terraform.tfvars file, if present.
-  - Environment variables
+  1- Any -var and -var-file options on the command line, in the order they are provided.
+  2- Any *.auto.tfvars or *.auto.tfvars.json files, processed in lexical order (alphabetical order) of their filenames.
+  3- The terraform.tfvars.json file, if present.
+  4- The terraform.tfvars file, if present.
+  5- Environment variables
 
 - Run terraform apply command.
 
