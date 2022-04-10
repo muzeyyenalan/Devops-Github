@@ -25,7 +25,7 @@ At the end of the this hands-on training, students will be able to;
 -Create folders name `terraform-modules`, `modules`, `dev`, `prod` directories in the home directory and files as below.
 
 ```bash
-cd && mkdir terraform-modules && cd terraform-modules && mkdir dev modules prod && cd dev && touch dev-vpc.tf && cd ../modules && touch main.tf outputs.tf variables.tf && cd ../prod && touch prod-vpc.tf && cd ../modules
+mkdir terraform-modules && cd terraform-modules && mkdir dev modules prod && cd dev && touch dev-vpc.tf && cd ../modules && touch main.tf outputs.tf variables.tf && cd ../prod && touch prod-vpc.tf && cd ../modules
 ```
 
 ```txt
@@ -212,7 +212,7 @@ terraform {
   required_providers {
     aws = {
       source = "hashicorp/aws"
-      version = "3.68.0"
+      version = "4.9.0"
     }
   }
 }
@@ -223,7 +223,7 @@ provider "aws" {
 
 variable "tf-ami" {
   type = list(string)
-  default = ["ami-0ed9277fb7eb570c9", "ami-0279c3b3186e54acd", "ami-0b0af3577fe5e3532"]
+  default = ["ami-0c02fb55956c7d316", "ami-04505e74c0741db8d", "ami-0b0af3577fe5e3532"]
 }
 
 variable "tf-tags" {
@@ -235,7 +235,7 @@ resource "aws_instance" "tf-instances" {
   ami = element(var.tf-ami, count.index )
   instance_type = "t2.micro"
   count = 3
-  key_name = "oliver-ohio"
+  key_name = "oliver"
   security_groups = ["tf-import-sg"]
   tags = {
     Name = element(var.tf-tags, count.index )
