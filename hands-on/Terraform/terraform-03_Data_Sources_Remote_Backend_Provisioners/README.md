@@ -265,7 +265,7 @@ provider "aws" {
 }
 
 resource "aws_instance" "instance" {
-  ami = "ami-061ac2e015473fbe2"
+  ami = "ami-0c02fb55956c7d316"
   instance_type = "t2.micro"
   key_name = "oliver"
   security_groups = ["tf-provisioner-sg"]
