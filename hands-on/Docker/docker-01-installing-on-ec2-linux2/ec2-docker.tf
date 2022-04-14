@@ -2,7 +2,7 @@
 terraform {
   required_providers {
     aws = {
-      source = "hashicorp/aws"
+      source  = "hashicorp/aws"
       version = "3.57.0"
     }
   }
@@ -10,15 +10,15 @@ terraform {
 
 
 provider "aws" {
-  region  = "us-east-1"
+  region = "us-east-1"
 }
 
 variable "secgr-dynamic-ports" {
-  default = [22,80,443]
+  default = [22, 80, 443]
 }
 
 variable "instance-type" {
-  default = "t2.micro"
+  default   = "t2.micro"
   sensitive = true
 }
 
@@ -29,12 +29,12 @@ resource "aws_security_group" "allow_ssh" {
   dynamic "ingress" {
     for_each = var.secgr-dynamic-ports
     content {
-      from_port = ingress.value
-      to_port = ingress.value
-      protocol = "tcp"
+      from_port   = ingress.value
+      to_port     = ingress.value
+      protocol    = "tcp"
       cidr_blocks = ["0.0.0.0/0"]
+    }
   }
-}
 
   egress {
     description = "Outbound Allowed"
@@ -46,13 +46,13 @@ resource "aws_security_group" "allow_ssh" {
 }
 
 resource "aws_instance" "tf-ec2" {
-  ami           = "ami-087c17d1fe0178315"
-  instance_type = var.instance-type
-  key_name = "tyler-team"
-  vpc_security_group_ids = [ aws_security_group.allow_ssh.id ]
-  iam_instance_profile = "terraform"
-      tags = {
-      Name = "Docker-engine"
+  ami                    = "ami-087c17d1fe0178315"
+  instance_type          = var.instance-type
+  key_name               = "firstkey"
+  vpc_security_group_ids = [aws_security_group.allow_ssh.id]
+  #iam_instance_profile = "terraform"
+  tags = {
+   Name = "Docker-engine"
   }
 
   user_data = <<-EOF
@@ -67,7 +67,7 @@ resource "aws_instance" "tf-ec2" {
               -o /usr/local/bin/docker-compose
               chmod +x /usr/local/bin/docker-compose
 	            EOF
-}  
+}
 output "myec2-public-ip" {
   value = aws_instance.tf-ec2.public_ip
 }
