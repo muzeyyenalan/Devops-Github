@@ -2,44 +2,31 @@
 
 Purpose of the this hands-on training is to teach students how to handle volumes in Docker containers.
 
-## Learning Outcomes 
+## Learning Outcomes
 
 At the end of the this hands-on training, students will be able to;
 
 - explain what Alpine container is and why it is widely used.
-
 - list available volumes in Docker.
-
 - create a volume in Docker.
-
 - inspect properties of a volume in Docker.
-
 - locate the Docker volume mount point.
-
 - attach a volume to a Docker container.
-
 - attach same volume to different containers.
-
 - delete Docker volumes.
 
 ## Outline
 
 - Part 1 - Launch a Docker Machine Instance and Connect with SSH
-
 - Part 2 - Data Persistence in Docker Containers
-
 - Part 3 - Managing Docker Volumes
-
 - Part 4 - Using Same Volume with Different Containers
-
 - Part 5 - docker volume behaviours
-
 - Part 6 - Bind Mounts
 
 ## Part 1 - Launch a Docker Machine Instance and Connect with SSH
 
 - Launch a Docker machine on Amazon Linux 2 AMI with security group allowing SSH connections using the [Cloudformation Template for Docker Machine Installation](../docker-01-installing-on-ec2-linux2/docker-installation-template.yml).
-
 - Connect to your instance with SSH.
 
 ```bash
@@ -54,7 +41,7 @@ ssh -i .ssh/call-training.pem ec2-user@ec2-3-133-106-98.us-east-2.compute.amazon
 systemctl status docker
 ```
 
-- Run an `alpine` container with interactive shell open, and add command to run alpine shell. Here, explain explain what the alpine container is and why it is so popular. (Small size, Secure, Simple, Fast boot)
+- syRun an `alpine` container with interactive shell open, and add command to run alpine shell. Here, explain explain what the alpine container is and why it is so popular. (Small size, Secure, Simple, Fast boot)
 
 ```bash
 docker run -it alpine ash
@@ -71,14 +58,6 @@ cat /etc/os-release
 ```bash
 cd home && touch short-life.txt && ls
 ```
-
-- Exit the container and return to ec2-user bash shell.
-
-```bash
-exit
-```
-
-- Show the list of all containers available on Docker machine.
 
 ```bash
 docker ps -a
@@ -117,7 +96,6 @@ docker ps -a
 ## Part 3 - Managing Docker Volumes
 
 - Explain why we need volumes in Docker.
-
 - List the volumes available in Docker, since not added volume before list should be empty.
 
 ```bash
@@ -302,12 +280,12 @@ docker volume rm cw-vol
 
 ## Part 5 - docker volume behaviours
 
-|No | Situation   | Behaviour |
-| ---- | ----------- | ------------ |
-| 1    | If there is no target directory. | The target directory is created and files inside volume are copied to this directory. |
-| 2    | If there is target directory, but it is empty. | The files in volume are copied to target directory.  |
-| 3    | If there is target directory and it is not empty, but volume is empty. | The files in the target directory are copied to volumes. |
-| 4    | If the volume is not empty. | There will be just the files inside the volume regardless of the target directory is full or empty. |
+| No | Situation                                                              | Behaviour                                                                                           |
+| -- | ---------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
+| 1  | If there is no target directory.                                       | The target directory is created and files inside volume are copied to this directory.               |
+| 2  | If there is target directory, but it is empty.                         | The files in volume are copied to target directory.                                                 |
+| 3  | If there is target directory and it is not empty, but volume is empty. | The files in the target directory are copied to volumes.                                            |
+| 4  | If the volume is not empty.                                            | There will be just the files inside the volume regardless of the target directory is full or empty. |
 
 - Create `empty-vol` and `full-vol` volumes.
 
@@ -316,7 +294,7 @@ docker volume create empty-vol
 docker volume create full-vol
 ```
 
-- Run an `alpine` container with interactive shell open, name the container as `vol-lesson`, attach the volume `full-vol` to `/cw` mount point in the container, and add command to run alpine shell. 
+- Run an `alpine` container with interactive shell open, name the container as `vol-lesson`, attach the volume `full-vol` to `/cw` mount point in the container, and add command to run alpine shell.
 
 ```bash
 docker run -it --name vol-lesson -v full-vol:/cw alpine ash
@@ -355,10 +333,10 @@ app.py
 
 ### Situation-1 and 2:
 
-|No | Situation   | Behaviour |
-| ---- | ----------- | ------------ |
-| 1    | If there is no target directory. | The target directory is created and files inside volume are copied to this directory. |
-| 2    | If there is target directory, but it is empty. | The files in volume are copied to target directory.  |
+| No | Situation                                      | Behaviour                                                                             |
+| -- | ---------------------------------------------- | ------------------------------------------------------------------------------------- |
+| 1  | If there is no target directory.               | The target directory is created and files inside volume are copied to this directory. |
+| 2  | If there is target directory, but it is empty. | The files in volume are copied to target directory.                                   |
 
 ![situation 1 and 2](situation-1-and-2.png)
 
@@ -375,12 +353,11 @@ full.txt
 
 - `exit` the container
 
-
 ### Situation-3:
 
-|No| Situation   | Behaviour |
-| ---- | ----------- | ------------ |
-| 3    | If there is target directory and it is not empty, but volume is empty. | The files in the target directory are copied to volumes. |
+| No | Situation                                                              | Behaviour                                                |
+| -- | ---------------------------------------------------------------------- | -------------------------------------------------------- |
+| 3  | If there is target directory and it is not empty, but volume is empty. | The files in the target directory are copied to volumes. |
 
 ![situation 3](situation-3.png)
 
@@ -402,7 +379,6 @@ app.py
 ```
 
 - `exit` the container.
-
 - List all files/folders under the volume `empty-vol`, show that the file `app.py` is there.
 
 ```bash
@@ -412,9 +388,9 @@ app.py
 
 ### Situation-4:
 
-|No    | Situation   | Behaviour |
-| ---- | ----------- | ------------ |
-| 4    | If the volume is not empty. | There will be just the files inside the volume regardless of the target directory is full or empty. |
+| No | Situation                   | Behaviour                                                                                           |
+| -- | --------------------------- | --------------------------------------------------------------------------------------------------- |
+| 4  | If the volume is not empty. | There will be just the files inside the volume regardless of the target directory is full or empty. |
 
 ![situation 4](situation-4.png)
 
@@ -437,7 +413,6 @@ full.txt
 ```
 
 - `exit` the container
-
 - Remove all volumes and containers and list them.
 
 ```bash
@@ -449,7 +424,7 @@ docker container ls
 
 ## Part 6 - Bind Mounts
 
-- Run the `nginx` container at the detached mod, name the container as `nginx-default`, and open <public-ip> on browser and show the nginx default page.
+- Run the `nginx` container at the detached mod, name the container as `nginx-default`, and open `<public-ip>` on browser and show the nginx default page.
 
 ```bash
 docker run -d --name nginx-default -p 80:80  nginx
@@ -472,7 +447,6 @@ root@4a1c7e5f394a:/usr/share/nginx/html# cat index.html
 ```
 
 - `exit` the container
-
 - Create a folder named  webpage, and an index.html file.
 
 ```bash
@@ -480,7 +454,7 @@ mkdir webpage && cd webpage
 echo "<h1>Welcome to Clarusway</h1>" > index.html
 ```
 
-- Run the `nginx` container at the detached mod, name the container as `nginx-new`, attach the directory `/home/ec2-user/webpage` to `/usr/share/nginx/html` mount point in the container, and open <public-ip> on browser and show the web page.
+- Run the `nginx` container at the detached mod, name the container as `nginx-new`, attach the directory `/home/ec2-user/webpage` to `/usr/share/nginx/html` mount point in the container, and open `<public-ip>` on browser and show the web page.
 
 ```bash
 docker run -d --name nginx-new -p 8080:80 -v /home/ec2-user/webpage:/usr/share/nginx/html nginx
@@ -504,7 +478,6 @@ root@a7e3d276a147:/usr/share/nginx/html# cat index.html
 ```
 
 - `exit` the container.
-
 - Add `<h2>This is added for docker volume lesson</h2>` line to index.html in the /home/ec2-user/webpage folder and check the web page on browser.
 
 ```bash
@@ -523,5 +496,3 @@ docker rm -f nginx-default nginx-new
 ```bash
  docker volume prune -f
 ```
-
- 
