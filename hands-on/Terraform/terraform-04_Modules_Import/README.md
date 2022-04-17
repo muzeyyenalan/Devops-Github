@@ -176,8 +176,7 @@ terraform destroy -auto-approve
 
 ## Part 2 - Terraform Import
 
-- Terraform is able to import existing infrastructure. This allows you take resources you've created by some other means and bring it under Terraform management.
-
+- Terraform is able to import existing infrastructure. 
 - In this example, we have 2 `EC2 instances` (1 ubuntu, 1 linux 2), and a `security group` in our AWS account and we want to import these resources to our infrastructure.
 
 - Bringing existing infrastructure under Terraform's control involves five main steps:
@@ -235,7 +234,7 @@ resource "aws_instance" "tf-instances" {
   ami = element(var.tf-ami, count.index )
   instance_type = "t2.micro"
   count = 3
-  key_name = "oliver"
+  key_name = "tyler-team"
   security_groups = ["tf-import-sg"]
   tags = {
     Name = element(var.tf-tags, count.index )
