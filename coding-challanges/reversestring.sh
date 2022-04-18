@@ -1,2 +1,2 @@
 #!/bin/bash
-echo '!!!esreveR si sihT' | grep -o . | tac | tr -d '\n' ; echo
+echo 1987 | grep -o . | tac | tr -d '\n' ; echo
