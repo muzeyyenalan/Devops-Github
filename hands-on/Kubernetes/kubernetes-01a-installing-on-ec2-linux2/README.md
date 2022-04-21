@@ -343,8 +343,9 @@ kubectl get pods
 
   ```bash
   kubectl get nodes
-  kubectl drain kube-worker-1 --ignore-daemonsets --delete-emptydir-data
   kubectl cordon kube-worker-1
+  kubectl drain kube-worker-1 --ignore-daemonsets --delete-emptydir-data
+
   kubectl delete node kube-worker-1
   ```
 
