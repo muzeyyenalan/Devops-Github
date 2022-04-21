@@ -2,7 +2,7 @@
 
 ## Description
 
-Bookstore Web API Application aims to create a bookstore web service using Docker to give students the understanding to dockerization of an application. The application code is to be deployed as a RESTful web service with Flask using Dockerfile and Docker Compose on AWS Elastic Compute Cloud (EC2) Instance using AWS Cloudformation Service.
+Bookstore Web API Application aims to create a bookstore web service using Docker to give students the understanding to dockerization of an application. The application code is to be deployed as a RESTful web service with Flask using Dockerfile and Docker Compose on AWS Elastic Compute Cloud (EC2) Instance using Terraform.
 
 ## Problem Statement
 
@@ -30,7 +30,7 @@ Bookstore Web API Application aims to create a bookstore web service using Docke
 | `PUT`     |   Update a resource                   | http://[ec2-hostname]/books/123 (updates the book with id=123, from data provided with the request) |
 | `DELETE`  |   Delete a resource                   | http://[ec2-hostname]/books/123 (delete the book with id=123) |
 
-- You are, as a cloud engineer, requested to deploy the app in the development environment on a Docker Machine on AWS EC2 Instance using AWS Cloudformation Service to showcase your project. To do that you need to;
+- You are, as a cloud engineer, requested to deploy the app in the development environment on a Docker Machine on AWS EC2 Instance using Terraform to showcase your project. To do that you need to;
 
   - Get the app code from GitHub repo of your team.
 
@@ -44,21 +44,21 @@ Bookstore Web API Application aims to create a bookstore web service using Docke
 
     - Use a custom network for the services.
 
-- In the development environment, you can configure your Cloudformation template using the followings,
+- In the development environment, you can configure your Terraform config file using the followings,
 
-  - The application stack should be created with new AWS resources.
+  - The application should be created with new AWS resources.
 
   - The application should run on Amazon Linux 2 EC2 Instance
 
   - EC2 Instance type can be configured as `t2.micro`.
 
-  - Instance launched by Cloudformation should be tagged `Web Server of StackName`
+  - Instance launched by Terraform should be tagged `Web Server of Bookstore`
 
   - The Web Application should be accessible via web browser from anywhere.
 
-  - The Application files should be downloaded from Github repo and deployed on EC2 Instance using user data script within cloudformation template.
+  - The Application files should be downloaded from Github repo and deployed on EC2 Instance using user data script within Terraform configuration file.
 
-  - Bookstore Web API URL should be given as output by Cloudformation Service, after the stack created.
+  - Bookstore Web API URL should be given as output byTerraform, after the resources created.
 
 ## Project Skeleton
 
@@ -68,9 +68,10 @@ Bookstore Web API Application aims to create a bookstore web service using Docke
 |----readme.md          # Given to the students (Definition of the project)
 |----bookstore-api.py   # Given to the students (Python Flask Web API)
 |----requirements.txt   # Given to the students (List of Flask modules for Web API)
-|----cfn-template.yml   # To be delivered by students (Cloudformation template)
+|----main.tf            # To be delivered by students (Terraform config file)
 |----docker-compose.yml # To be delivered by students
 |----Dockerfile         # To be delivered by students
+|----cfn-template.yml   # To be delivered by students (Optional)
 ```
 
 ## Expected Outcome
@@ -89,9 +90,9 @@ Bookstore Web API Application aims to create a bookstore web service using Docke
 
 - AWS Security Group Configuration
 
-- AWS Cloudformation Service
+- AWS Cloudformation Service (Optional)
 
-- AWS Cloudformation Template Design
+- Terraform Configuration with AWS
 
 - Git & Github for Version Control System
 
@@ -99,17 +100,15 @@ Bookstore Web API Application aims to create a bookstore web service using Docke
 
 - configure connection to the `MySQL` database.
 
-- build a Docker images.
+- build a Docker image.
 
 - configure Docker Compose to run Python Flask app.
 
-- improve bash scripting skills using `user data` section in Cloudformation to install and setup web application on EC2 Instance
+- improve bash scripting skills using `user data` section in Terraform to install and setup web application on EC2 Instance
 
 - configure AWS EC2 Instance and Security Groups.
 
-- configure Cloudformation template to use AWS Resources.
-
-- use AWS Cloudformation Service to launch stacks.
+- configure Terraform files to use AWS Resources.
 
 - use git commands (push, pull, commit, add etc.) and Github as Version Control System.
 
@@ -123,11 +122,11 @@ Bookstore Web API Application aims to create a bookstore web service using Docke
 
 - Step 3: Prepare scripts to build a Python Flask App Image using Dockerfile and Docker Compose
 
-- Step 4: Prepare a cloudformation template to deploy your app on EC2 Instance
+- Step 4: Prepare a Terrform configuration file to deploy your app on EC2 Instance
 
 - Step 5: Push your application into your own public repo on Github
 
-- Step 6: Deploy your application on AWS Cloud using Cloudformation template to showcase your app within your team.
+- Step 6: Deploy your application on AWS Cloud using Terraform to showcase your app within your team.
 
 ## Notes
 
@@ -137,4 +136,6 @@ Bookstore Web API Application aims to create a bookstore web service using Docke
 
 - [REpresentational State Transfer](https://en.wikipedia.org/wiki/Representational_state_transfer)
 
-- [AWS Cloudformation User Guide](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/Welcome.html)
+- [Terraform AWS Provider Documentaion](https://registry.terraform.io/providers/hashicorp/aws/latest/docs)
+
+- [AWS Cloudformation User Guide](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/Welcome.html) (Optional)
