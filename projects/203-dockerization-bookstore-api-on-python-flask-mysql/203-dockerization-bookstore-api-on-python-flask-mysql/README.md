@@ -20,7 +20,7 @@ Bookstore Web API Application aims to create a bookstore web service using Docke
 
   - is_sold: book availability status, type is boolean.
 
-- Your teammates also created the RESTful web service as given in [Bookstore API](./bookstore-api.py) using Python Flask Framework. Below table shows how the HTTP methods are designed to affect the given resources identified by URIs.
+- Your teammates also created the RESTful web service as given in [Bookstore API](bookstore-api.py) using Python Flask Framework. Below table shows how the HTTP methods are designed to affect the given resources identified by URIs.
 
 | HTTP Method  | Action | Example|
 | --- | --- | --- |
