@@ -44,8 +44,8 @@ At the end of the this hands-on training, students will be able to;
 |TCP|Inbound|6443|Kubernetes API server|All|
 |TCP|Inbound|2379-2380|`etcd` server client API|kube-apiserver, etcd|
 |TCP|Inbound|10250|Kubelet API|Self, Control plane|
-|TCP|Inbound|10251|kube-scheduler|Self|
-|TCP|Inbound|10252|kube-controller-manager|Self|
+|TCP|Inbound|10259|kube-scheduler|Self|
+|TCP|Inbound|10257|kube-controller-manager|Self|
 |TCP|Inbound|22|remote access with ssh|Self|
 |UDP|Inbound|8472|Cluster-Wide Network Comm. - Flannel VXLAN|Self|
 
@@ -126,7 +126,6 @@ EOF
 sudo sysctl --system
 ```
 
-
 ## Part 2 - Setting Up Master Node for Kubernetes
 
 - Following commands should be executed on Master Node only.
@@ -138,6 +137,7 @@ sudo kubeadm config images pull
 ```
 
 - By default, the Kubernetes cgroup driver is set to system, but docker is set to systemd. We need to change the Docker cgroup driver by creating a configuration file `/etc/docker/daemon.json` and adding the following line then restart deamon, docker and kubelet:
+
 ```bash
 echo '{"exec-opts": ["native.cgroupdriver=systemd"]}' | sudo tee /etc/docker/daemon.json
 sudo systemctl daemon-reload
@@ -244,6 +244,7 @@ kubectl get nodes
 - Run `docker container ls` on the worker nodes command to list the Docker images running on the worker nodes. We should see an empty list.
 
 - By default, the Kubernetes cgroup driver is set to system, but docker is set to systemd. We need to change the Docker cgroup driver by creating a configuration file `/etc/docker/daemon.json` and adding the following line then restart deamon, docker and kubelet:
+
 ```bash
 echo '{"exec-opts": ["native.cgroupdriver=systemd"]}' | sudo tee /etc/docker/daemon.json
 sudo systemctl daemon-reload
@@ -251,7 +252,7 @@ sudo systemctl restart docker
 sudo systemctl restart kubelet
 ```
 
-- Log into worker nodes and run `sudo kubeadm join...` command to have them join the cluster.
+- Run `sudo kubeadm join...` command to have them join the cluster.
 
 ```bash
 sudo kubeadm join 172.31.3.109:6443 --token 1aiej0.kf0t4on7c7bm2hpa \
@@ -342,8 +343,9 @@ kubectl get pods
 
   ```bash
   kubectl get nodes
-  kubectl drain kube-worker-1 --ignore-daemonsets --delete-emptydir-data
   kubectl cordon kube-worker-1
+  kubectl drain kube-worker-1 --ignore-daemonsets --delete-emptydir-data
+
   kubectl delete node kube-worker-1
   ```
 
