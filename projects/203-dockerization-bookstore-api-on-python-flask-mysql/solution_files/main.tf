@@ -51,7 +51,7 @@ resource "aws_instance" "tf-docker-ec2" {
   ami = "ami-0f9fc25dd2506cf6d"
   instance_type = "t2.micro"
   key_name = "oliver"
-  security_groups = [aws_security_group.tf-docker-sec-gr-203.id]
+  security_groups = ["docker-sec-group-203"]
   tags = {
     Name = "Web Server of Bookstore"
   }
