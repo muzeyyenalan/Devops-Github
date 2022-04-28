@@ -558,7 +558,7 @@ configmap/demo-config created
 
 - Check the content of the `configmap/demo-config`.
 
-```bash
+```json
 $ kubectl get  configmap/demo-config -o json
 {
     "apiVersion": "v1",
