@@ -558,7 +558,7 @@ configmap/demo-config created
 
 - Check the content of the `configmap/demo-config`.
 
-```bash
+```json
 $ kubectl get  configmap/demo-config -o json
 {
     "apiVersion": "v1",
@@ -578,7 +578,7 @@ $ kubectl get  configmap/demo-config -o json
 
 We have modifed our application to read parameters from the file. So the `deployment` file changed as follows:
 
-```bash
+```yaml
 $ cat deployment.yaml 
 apiVersion: apps/v1
 kind: Deployment
@@ -656,7 +656,7 @@ deployment.apps "demo" deleted
 
 The ConfigMap YAML file
 
-```bash
+```yaml
 $ cat configmap.yaml
 apiVersion: v1
 kind: ConfigMap
@@ -669,7 +669,7 @@ data:
 
 - Note the greeting message is changed.
 
-```bash
+```yaml
 $ cat deployment.yaml
 apiVersion: apps/v1
 kind: Deployment
