@@ -101,7 +101,7 @@ kubectl explain pvc
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: clarus-pv-claim
+  name: muzeyyen
 spec:
   storageClassName: manual
   accessModes:
@@ -224,7 +224,7 @@ kubectl delete pv clarus-pv-vol
 mkdir pvc-bound && cd pvc-bound
 ```
 
-- Create a `pv-3g.yaml` file using the following content with the volume type of `hostPath` to build a `PersistentVolume`.
+- Create a `pv-3g.yaml` f ile using the following content with the volume type of `hostPath` to build a `PersistentVolume`.
 
 ```yaml
 apiVersion: v1

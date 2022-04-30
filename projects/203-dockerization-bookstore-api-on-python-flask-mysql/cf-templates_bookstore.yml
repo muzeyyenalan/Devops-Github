@@ -1,0 +1,66 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Description: >
+  This Cloudformation Template creates a Docker machine on EC2 Instance and
+  deploys Bookstore Web API, Docker Machine will run on Amazon Linux 2
+  EC2 Instance with custom security group allowing HTTP (Port 80) 
+  and SSH (Port 22) connections from anywhere.
+Parameters:
+  KeyPairName:
+    Description: Enter the name of your Key Pair for SSH connections.
+    Type: AWS::EC2::KeyPair::KeyName
+    ConstraintDescription: Must one of the existing EC2 KeyPair
+
+Resources:
+  DockerMachineSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Enable HTTP and SSH for Bookstore Web API
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0
+  DockerMachine:
+    Type: AWS::EC2::Instance
+    Properties:
+      ImageId: ami-0f9fc25dd2506cf6d
+      InstanceType: t2.micro
+      KeyName: !Ref KeyPairName
+      SecurityGroupIds:
+        - !GetAtt DockerMachineSecurityGroup.GroupId
+      Tags:                
+        -                        
+          Key: Name
+          Value: !Sub Docker Machine of ${AWS::StackName}   
+      UserData:
+        Fn::Base64: |
+          #! /bin/bash
+          yum update -y
+          amazon-linux-extras install docker -y
+          systemctl start docker
+          systemctl enable docker
+          usermod -a -G docker ec2-user
+          curl -L "https://github.com/docker/compose/releases/download/1.26.2/docker-compose-$(uname -s)-$(uname -m)" \
+          -o /usr/local/bin/docker-compose
+          chmod +x /usr/local/bin/docker-compose
+          mkdir -p /home/ec2-user/bookstore-api
+          TOKEN="XXXX"
+          FOLDER="https://$TOKEN@raw.githubusercontent.com/XXXX/bookstore-repo-cfn/main/"
+          curl -s --create-dirs -o "/home/ec2-user/bookstore-api/app.py" -L "$FOLDER"bookstore-api.py
+          curl -s --create-dirs -o "/home/ec2-user/bookstore-api/requirements.txt" -L "$FOLDER"requirements.txt
+          curl -s --create-dirs -o "/home/ec2-user/bookstore-api/Dockerfile" -L "$FOLDER"Dockerfile
+          curl -s --create-dirs -o "/home/ec2-user/bookstore-api/docker-compose.yml" -L "$FOLDER"docker-compose.yml
+          cd /home/ec2-user/bookstore-api
+          docker build -t "XXXX/bookstore:cfn" .
+          docker-compose up -d
+Outputs:
+  WebsiteURL:
+    Description: Bookstore Web API URL 
+    Value: !Sub 
+      - http://${PublicAddress}
+      - PublicAddress: !GetAtt DockerMachine.PublicDnsName

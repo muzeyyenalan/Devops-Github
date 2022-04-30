@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-demo-service
+spec:
+  selector:
+    app: demo
+  ports:
+  - port: 80
+    targetPort: 8888

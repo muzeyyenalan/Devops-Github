@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: myconfigmap
+  labels:
+    app: myapplication
+data:
+  side.settings:
+    color:
+      Type: AWS::Backup::BackupSelection
+      Properties:
+        BackupPlanId: "String" # Required
+        BackupSelection:
+          Conditions: JSON
+          IamRoleArn: "String"
+          ListOfTags:
+            -
+          NotResources:
+            -
+          Resources:
+            -
+          SelectionName: "String"
