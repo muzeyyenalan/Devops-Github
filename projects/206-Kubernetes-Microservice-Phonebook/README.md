@@ -132,8 +132,9 @@ SEARCH DEPLOYMENT AND SERVICE
 
 DATABASE DEPLOYMENT AND SERVICE
 1. mysql_deployement.yml          # To be delivered by students
-2. persistent_volume.yaml         # To be delivered by students
-2. persistent_volume_claim.yaml   # To be delivered by students
+2. mysql_service.yaml             # To be delivered by students
+3. persistent_volume.yaml         # To be delivered by students
+4. persistent_volume_claim.yaml   # To be delivered by students
 
 SECRETS AND CONFIGMAP
 1. mysql-secret.yaml              # To be delivered by students
