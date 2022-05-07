@@ -114,7 +114,7 @@ aws configure
 eksctl create cluster \
  --name serdar-cluster \
  --region us-east-2 \
- --zones us-east-1a, us-east-1b, us-east-1c \
+ --zones us-east-1a,us-east-1b,us-east-1c \
  --nodegroup-name my-nodes \
  --node-type t2.medium \
  --nodes 2 \
