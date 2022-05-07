@@ -100,7 +100,7 @@ $ aws eks list-clusters
 
     - Give general descriptions about the page and the steps of creating the cluster.
 
-    - Fill the ```Name``` and ```Kubernetes version``` fields. (Ex: MyCluster, 1.17)
+    - Fill the ```Name``` and ```Kubernetes version``` fields. (Ex: MyCluster, 1.22)
 
         <i>Mention the durations for minor version support and the approximate release frequency.</i>
 
