@@ -23,53 +23,58 @@ At the end of this hands-on training, students will be able to;
 
 ## Prerequisites
 
-1. AWS CLI with Configured Credentials
+- Launch an AWS EC2 instance of Amazon Linux 2 AMI with security group allowing SSH.
 
-    <i>Short recap about </i> ***```aws configure```*** <i>command could be made,</i> ```.aws``` <i>directory and its contents might be shown to the students.</i>
+- Connect to the instance with SSH.
 
-2. kubectl installed
+- Update the installed packages and package cache on your instance.
 
-if not;
-
-- You can go to
-  
-  - https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/ 
-  - https://docs.aws.amazon.com/eks/latest/userguide/install-kubectl.html
-  
-and install with any method
-
-- AWS CLI installation
-  
-```text
-curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-unzip awscliv2.zip
-sudo ./aws/install
-```
-- `kubectl` installation
-  
 ```bash
-curl -o kubectl https://amazon-eks.s3.us-west-2.amazonaws.com/1.20.4/2021-04-12/bin/linux/amd64/kubectl
+sudo yum update -y
+```
+
+- Download the Amazon EKS vended kubectl binary.
+
+```bash
+curl -o kubectl https://s3.us-west-2.amazonaws.com/amazon-eks/1.22.6/2022-03-09/bin/linux/amd64/kubectl
+```
+
+- Apply execute permissions to the binary.
+
+```bash
 chmod +x ./kubectl
-mkdir -p $HOME/bin && mv ./kubectl $HOME/bin/kubectl && export PATH=$PATH:$HOME/bin
-echo 'export PATH=$PATH:$HOME/bin' >> ~/.bash_profile
+```
+
+- Copy the binary to a folder in your PATH. If you have already installed a version of kubectl, then we recommend creating a $HOME/bin/kubectl and ensuring that $HOME/bin comes first in your $PATH.
+
+```bash
+mkdir -p $HOME/bin && cp ./kubectl $HOME/bin/kubectl && export PATH=$PATH:$HOME/bin
+```
+
+- (Optional) Add the $HOME/bin path to your shell initialization file so that it is configured when you open a shell.
+
+```bash
+echo 'export PATH=$PATH:$HOME/bin' >> ~/.bashrc
+```
+
+- After you install kubectl , you can verify its version with the following command:
+
+```bash
 kubectl version --short --client
 ```
 
-or
+- Configure AWS credentials. Or you can attach `AWS IAM Role` to your EC2 instance.
 
 ```bash
-curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
-sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
-kubectl version --client
+aws configure
 ```
-
 
 - aws configuration
 
 ```bash
 $ aws configure
-  AWS Access Key ID [None]: AKIAIOSFODNN7EXAMPLE
-  AWS Secret Access Key [None]: wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+  AWS Access Key ID [None]: xxxxxxx
+  AWS Secret Access Key [None]: xxxxxxxx
   Default region name [None]: us-east-1
   Default output format [None]: json
 ```
@@ -79,9 +84,7 @@ $ aws configure
 ```bash
 $ aws eks list-clusters
 {
-  "clusters": [
-    "my-cluster"
-  ]
+  "clusters": []
 }
 ```
 
@@ -97,7 +100,7 @@ $ aws eks list-clusters
 
     - Give general descriptions about the page and the steps of creating the cluster.
 
-    - Fill the ```Name``` and ```Kubernetes version``` fields. (Ex: MyCluster, 1.17)
+    - Fill the ```Name``` and ```Kubernetes version``` fields. (Ex: MyCluster, 1.21)
 
         <i>Mention the durations for minor version support and the approximate release frequency.</i>
 
@@ -125,7 +128,7 @@ $ aws eks list-clusters
 
         <i>Explain the necessity of using dedicated VPC for the cluster.</i>
 
-    - Select default VPC security or create one with SSH connection. 
+    - Select default VPC security or create one with SSH connection and https. 
 
         <i>Explain the necessity of using dedicated Securitygroup for the cluster.</i>
 
