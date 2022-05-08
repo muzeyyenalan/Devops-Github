@@ -23,5 +23,7 @@ watches the free space of the hard disks and warns the user when that free space
 - Expected Output :
 
 Using default value for threshold!
+
 Threshold = 30
+
 WARNING: The partition "/dev/root" has used 61% of total available space - Date: Wed Aug 28
