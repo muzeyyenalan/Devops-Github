@@ -2,6 +2,8 @@ apiVersion: v1
 kind: Service
 metadata:
   name: storefront-service
+  annotations: 
+    alb.ingress.kubernetes.io/healthcheck-path: /
 spec:
   type: NodePort
   selector:
