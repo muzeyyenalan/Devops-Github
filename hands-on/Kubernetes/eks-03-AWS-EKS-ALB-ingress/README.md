@@ -336,7 +336,7 @@ ingress-clarusshop   <none>   *       k8s-default-ingressc-38a2e90a69-465630546.
 
 - On browser, type this  ( k8s-default-ingressc-38a2e90a69-465630546.us-east-2.elb.amazonaws.com ), you must see the clarusshop web page. If you type `k8s-default-ingressc-38a2e90a69-465630546.us-east-2.elb.amazonaws.com/account`, then the account page will be opened and so on.
 
->**Important Note: In order for Ingress to run smoothly, the paths specified in the application and the paths in ingress must be the same. For example, application microservice must be published from `/account` path.**
+>**Important Note: In order for Ingress to run smoothly, the paths specified in the application and the paths in ingress must be the same. For example, account microservice must be published from `/account` path.**
 
 ### Adding hostname and certificate to ALB.
 
