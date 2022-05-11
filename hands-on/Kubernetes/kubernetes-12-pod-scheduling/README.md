@@ -24,7 +24,7 @@ At the end of this hands-on training, students will be able to;
 
 ## Part 1 - Setting up the Kubernetes Cluster
 
-- Launch a Kubernetes Cluster of Ubuntu 20.04 with two nodes (one master, one worker) using the [Cloudformation Template to Create Kubernetes Cluster](./cfn-template-to-create-k8s-cluster.yml). *Note: Once the master node up and running, the worker node automatically joins the cluster.*
+- Launch a Kubernetes Cluster of Ubuntu 20.04 with two nodes (one master, one worker). 
 
 >*Note: If you have a problem with the Kubernetes cluster, you can use this link for the lesson.*
 >https://www.katacoda.com/courses/kubernetes/playground
@@ -86,7 +86,7 @@ spec:
 kubectl apply -f clarus-deploy.yaml
 ```
 
-- List the pods and notice that all pods are assigned to the worker node.
+- List the pods and notice that all pods are assigned to the master node.
 
 ```bash
 kubectl get po -o wide
@@ -102,6 +102,7 @@ kubectl delete -f clarus-deploy.yaml
 
 ```bash
 kubectl taint nodes kube-master node-role.kubernetes.io/master:NoSchedule-
+kubectl taint nodes kube-master node-role.kubernetes.io/control-plane:NoSchedule-
 ```
 
 - Create the clarus-deploy again.
