@@ -102,6 +102,7 @@ kubectl delete -f clarus-deploy.yaml
 
 ```bash
 kubectl taint nodes kube-master node-role.kubernetes.io/master:NoSchedule-
+kubectl taint nodes kube-master node-role.kubernetes.io/control-plane:NoSchedule-
 ```
 
 - Create the clarus-deploy again.
