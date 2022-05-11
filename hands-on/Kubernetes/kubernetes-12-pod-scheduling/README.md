@@ -86,7 +86,7 @@ spec:
 kubectl apply -f clarus-deploy.yaml
 ```
 
-- List the pods and notice that all pods are assigned to the worker node.
+- List the pods and notice that all pods are assigned to the master node.
 
 ```bash
 kubectl get po -o wide
