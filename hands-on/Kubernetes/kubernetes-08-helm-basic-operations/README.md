@@ -245,31 +245,6 @@ helm uninstall myvalue
 helm install --debug --dry-run setflag clarus-chart --set course=AWS
 ```
 
-- Install the clarus-chart.
-
-```bash
-helm install setflag clarus-chart --set course=AWS
-```
-
-- Check the values that got deployed with the following command.
-
-```bash
-helm get manifest setflag
-```
-
-- Check the configmap.
-
-```bash
-kubectl get cm
-kubectl describe cm clarus-chart-config
-```
-
-- Remove the release.
-
-```bash
-helm uninstall setflag
-```
-
 - We can also get values with built-in objects. Objects can be simple and have just one value. Or they can contain other objects or functions. For example. the Release object contains several objects (like Release.Name) and the Files object has a few functions.
 
 - Edit the clarus-chart/templates/configmap.yaml as below.
@@ -298,45 +273,9 @@ lesson:
   topic: helm
 ```
 
-- Edit the clarus-chart/templates/configmap.yaml as below.
+- So far, we've seen how to place information into a template. But that information is placed into the template unmodified. Sometimes we want to transform the supplied data in a way that makes it more useful to us.
 
-```yaml
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: {{ .Release.Name }}-config
-data:
-  myvalue: "clarus-chart configmap example"
-  course: {{ .Values.course }}
-  topic: {{ .Values.lesson.topic }}
-```
-
-- Let's see how the values are getting substituted with the `dry-run` option.
-
-```bash
-helm install --debug --dry-run morevalues clarus-chart
-```
-
-- So far, we've seen how to place information into a template. But that information is placed into the template unmodified. Sometimes we want to transform the supplied data in a way that makes it more useful to us. Update the `clarus-chart/templates/configmap.yaml` as below.
-
-```yaml
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: {{ .Release.Name }}-config
-data:
-  myvalue: "clarus-chart configmap example"
-  course: {{ quote .Values.course }}
-  topic: {{ quote .Values.lesson.topic }}  
-```
-
- Let's see how the values are getting substituted with the `dry-run` option.
-
-```bash
-helm install --debug --dry-run morevalues clarus-chart
-```
-
-- Helm has over 60 available functions. Some of them are defined by the [Go template language](https://pkg.go.dev/text/template) itself. Most of the others are part of the [Sprig template](https://masterminds.github.io/sprig/) library. We have already seen the quote. Let's see some other functions.
+- Helm has over 60 available functions. Some of them are defined by the [Go template language](https://pkg.go.dev/text/template) itself. Most of the others are part of the [Sprig template](https://masterminds.github.io/sprig/) library. Let's see some functions.
 
 - Update the `clarus-chart/templates/configmap.yaml` as below.
 
@@ -347,8 +286,8 @@ metadata:
   name: {{ .Release.Name }}-config
 data:
   myvalue: "clarus-chart configmap example"
-  course: {{ .Values.course }}
-  topic: {{ .Values.lesson.topic }}
+  course: {{ quote .Values.course }}
+  topic: {{ upper .Values.lesson.topic }}
   time: {{ now | date "2006.01.02" | quote }} 
 ```
 
@@ -563,6 +502,7 @@ helm plugin install https://github.com/chartmuseum/helm-push.git
 - In clarus-chart/Chart.yaml, set the `version` value to `0.2.0`and push the chart.
 
 ```bash
+cd
 helm cm-push clarus-chart mylocalrepo
 ```
 
