@@ -120,7 +120,7 @@ aws configure
 ```bash
 
 eksctl create cluster \
- --name mycluster \
+ --name hasan-cluster \
  --version 1.22 \
  --region us-east-1 \
  --zones us-east-1a,us-east-1b,us-east-1c \
@@ -161,7 +161,7 @@ curl -o iam_policy.json https://raw.githubusercontent.com/kubernetes-sigs/aws-lo
 
 ```bash
 aws iam create-policy \
-    --policy-name AWSLoadBalancerControllerIAMPolicy \
+    --policy-name AWSLoadBalancerControllerIAMPolicyhasan \
     --policy-document file://iam_policy.json
 ```
 
@@ -170,11 +170,12 @@ aws iam create-policy \
 
 ```bash
 eksctl create iamserviceaccount \
-  --cluster=my-cluster \
+  --cluster=hasan-cluster \
+  --region=us-east-1 \
   --namespace=kube-system \
   --name=aws-load-balancer-controller \
   --role-name "AmazonEKSLoadBalancerControllerRole" \
-  --attach-policy-arn=arn:aws:iam::111122223333:policy/AWSLoadBalancerControllerIAMPolicy \
+  --attach-policy-arn=arn:aws:iam::297946603528:policy/AWSLoadBalancerControllerIAMPolicyhasan \
   --approve
 ```
 
@@ -189,7 +190,7 @@ eksctl create iamserviceaccount \
 - Solution to this error provide the command below:
 
 ```bash
-eksctl utils associate-iam-oidc-provider --region=us-east-1 --cluster=mycluster --approve
+eksctl utils associate-iam-oidc-provider --region=us-east-1 --cluster=hasan-cluster --approve
 ```
 
 - You shoulD provide the last command again in order to create IAM service account:
@@ -213,7 +214,7 @@ helm repo update
 
 helm install aws-load-balancer-controller eks/aws-load-balancer-controller \
   -n kube-system \
-  --set clusterName=mycluster \
+  --set clusterName=hasan-cluster \
   --set serviceAccount.create=false \
   --set serviceAccount.name=aws-load-balancer-controller 
 ```
@@ -336,7 +337,7 @@ ingress-clarusshop   <none>   *       k8s-default-ingressc-38a2e90a69-465630546.
 
 - On browser, type this  ( k8s-default-ingressc-38a2e90a69-465630546.us-east-2.elb.amazonaws.com ), you must see the clarusshop web page. If you type `k8s-default-ingressc-38a2e90a69-465630546.us-east-2.elb.amazonaws.com/account`, then the account page will be opened and so on.
 
->**Important Note: In order for Ingress to run smoothly, the paths specified in the application and the paths in ingress must be the same. For example, account microservice must be published from `/account` path.**
+>**Important Note: In order for Ingress to run smoothly, the paths specified in the application and the paths in ingress must be the same. For example, application microservice must be published from `/account` path.**
 
 ### Adding hostname and certificate to ALB.
 
