@@ -1,7 +1,7 @@
 //This Terraform Template creates 4 Ansible Machines on EC2 Instances
 //Ansible Machines will run on Amazon Linux 2 and Ubuntu 20.04 with custom security group
 //allowing SSH (22) and HTTP (80) connections from anywhere.
-//User needs to select appropriate variables form "tfvars" file when launching the instance.
+//User needs to select appropriate variables from "tfvars" file when launching the instance.
 
 terraform {
   required_providers {
