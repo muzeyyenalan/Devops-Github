@@ -1,42 +1,42 @@
 //This Terraform Template creates 3 Ansible Machines on EC2 Instances
 //Ansible Machines will run on Amazon Linux 2 with custom security group
 //allowing SSH (22) and HTTP (80) connections from anywhere.
-//User needs to select appropriate key name when launching the instance.
+//User needs to select appropriate variables form "tfvars" file when launching the instance.
 
 terraform {
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "~> 3.0"
+      version = "~> 4.0"
     }
   }
 }
 
 provider "aws" {
-  region = "us-east-1"
-#  secret_key = ""
-#  access_key = ""
+  region = var.region
+  # secret_key = ""
+  # access_key = ""
 }
 
-variable "tags" {
-  default = ["control_node", "node_1", "node_2"]
+locals {
+  user = "oliver"
 }
 
-resource "aws_instance" "amazon-linux-2" {
-  ami = "ami-0a8b4cd432b1c3063"
-  instance_type = "t2.micro"
-  count = 3
-  key_name = "oliver"
-  security_groups = ["ansible-session-3-sec-gr"]
+resource "aws_instance" "nodes" {
+  ami = var.myami
+  instance_type = var.instancetype
+  count = var.num
+  key_name = var.mykey
+  vpc_security_group_ids = [aws_security_group.tf-sec-gr.id]
   tags = {
-    Name = element(var.tags, count.index)
+    Name = "${element(var.tags, count.index)}-${local.user}"
   }
 }
 
 resource "aws_security_group" "tf-sec-gr" {
-  name = "ansible-session-3-sec-gr"
+  name = "ansible-lesson3-sec-gr-${local.user}"
   tags = {
-    Name = "ansible-session-sec-gr"
+    Name = "ansible-session3-sec-gr-${local.user}"
   }
 
   ingress {
@@ -62,22 +62,24 @@ resource "aws_security_group" "tf-sec-gr" {
 }
 
 resource "null_resource" "config" {
-  depends_on = [aws_instance.amazon-linux-2[0]]
+  depends_on = [aws_instance.nodes[0]]
   connection {
-    host = aws_instance.amazon-linux-2[0].public_ip
+    host = aws_instance.nodes[0].public_ip
     type = "ssh"
     user = "ec2-user"
-    private_key = file("~/oliver.pem")
-    }
+    private_key = file("~/.ssh/${var.mykeypem}")
+    # Do not forget to define your key file path correctly!
+  }
 
   provisioner "file" {
-  source = "./ansible.cfg"
-  destination = "/home/ec2-user/ansible.cfg"
-}
+    source = "./ansible.cfg"
+    destination = "/home/ec2-user/ansible.cfg"
+  }
 
   provisioner "file" {
-    source = "~/oliver.pem"
-    destination = "/home/ec2-user/oliver.pem"
+    # Do not forget to define your key file path correctly!
+    source = "~/.ssh/${var.mykeypem}"
+    destination = "/home/ec2-user/${var.mykeypem}"
   }
 
   provisioner "remote-exec" {
@@ -86,14 +88,14 @@ resource "null_resource" "config" {
       "sudo yum update -y",
       "sudo amazon-linux-extras install ansible2 -y",
       "echo [webservers] >> inventory.txt",
-      "echo node1  ansible_host=${aws_instance.amazon-linux-2[1].private_ip}  ansible_ssh_private_key_file=~/oliver.pem ansible_user=ec2-user >> inventory.txt",
+      "echo node1 ansible_host=${aws_instance.nodes[1].private_ip} ansible_ssh_private_key_file=~/${var.mykeypem} ansible_user=ec2-user >> inventory.txt",
       "echo [dbservers] >> inventory.txt",
-      "echo node2 ansible_host=${aws_instance.amazon-linux-2[2].private_ip} ansible_ssh_private_key_file=~/oliver.pem ansible_user=ec2-user >> inventory.txt",
-      "chmod 400 oliver.pem"
+      "echo node2 ansible_host=${aws_instance.nodes[2].private_ip} ansible_ssh_private_key_file=~/${var.mykeypem} ansible_user=ec2-user >> inventory.txt",
+      "chmod 400 ${var.mykeypem}"
     ]
   }
 }
 
 output "controlnodeip" {
-  value = aws_instance.amazon-linux-2[0].public_ip
+  value = aws_instance.nodes[0].public_ip
 }
