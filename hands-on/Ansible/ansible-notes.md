@@ -43,7 +43,7 @@ ansible-doc -t inventory aws_ec2
 # list dynamic inventory in yaml
 ansible-inventory -i inventory_aws_ec2.yml --list --yaml
 ```
-cd /usr/lib/python2.7/site-packages/ansible/modules
+
 # list ansible facts
 
 ```bash
