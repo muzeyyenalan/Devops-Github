@@ -1,8 +1,8 @@
 //aws_access_key = ""
 //aws_secret_key = ""
 myami = "ami-0022f774911c1d690"
-mykey = "oliver"
-mykeypem = "oliver.pem"
+mykey = "walter-pem"
+mykeypem = "walter-pem.pem"
 tags = ["control_node", "node_1", "node_2"]
 instancetype = "t2.micro"
 num = 3
