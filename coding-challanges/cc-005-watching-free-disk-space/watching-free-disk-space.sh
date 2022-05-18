@@ -19,7 +19,7 @@ fi
 let "PERCENT += 0"
 printf "Threshold = %d\n" $PERCENT
 
-df -Ph | grep -vE '^Filesystem|tmpfs|cdrom' | awk '{ print $5,$1 }' | while read data;
+|tmpfs|cdrom' df -Ph | grep -vE '^Filesystem| awk '{ print $5,$1 }' | while read data;
 do
     used=$(echo $data | awk '{print $1}' | sed s/%//g)
     p=$(echo $data | awk '{print $2}')
