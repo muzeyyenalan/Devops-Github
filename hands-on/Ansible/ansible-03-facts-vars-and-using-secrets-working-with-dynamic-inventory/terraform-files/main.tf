@@ -19,7 +19,11 @@ provider "aws" {
 }
 
 locals {
-  user = "oliver"
+  user = "walter"
+}
+
+variable "mykeypem" {
+  default = "walter-pem.pem"
 }
 
 resource "aws_instance" "nodes" {
