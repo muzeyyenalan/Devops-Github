@@ -22,9 +22,6 @@ locals {
   user = "walter"
 }
 
-variable "mykeypem" {
-  default = "walter-pem.pem"
-}
 
 resource "aws_instance" "nodes" {
   ami = var.myami
