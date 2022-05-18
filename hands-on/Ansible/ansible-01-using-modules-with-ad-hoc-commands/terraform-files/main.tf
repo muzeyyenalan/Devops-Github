@@ -14,7 +14,6 @@ terraform {
 
 provider "aws" {
   region = "us-east-1"
-  profile = "cw-training"
   # secret_key = ""
   # access_key = ""
 }
@@ -38,7 +37,7 @@ resource "aws_instance" "amazon-linux-2" {
 resource "aws_instance" "ubuntu" {
   ami = "ami-04505e74c0741db8d"
   instance_type = "t2.micro"
-  key_name = "walter-pem"
+  key_name = "walter-pem" ####### CHANGE HERE #######
   security_groups = ["ansible-session-sec-gr"]
 
 tags = {
@@ -85,8 +84,7 @@ resource "null_resource" "config" {
 
   provisioner "remote-exec" {
     inline = [
-    "sudo apt install rsync grsync -y",
+    "sudo yum install rsync grsync -y",
     ]
   }
-
 }
