@@ -19,14 +19,14 @@ provider "aws" {
 }
 
 locals {
-  user = "oliver"
+  user = "muzeyyen"
 }
 
 resource "aws_instance" "nodes" {
-  ami = var.myami
-  instance_type = var.instancetype
-  count = var.num
-  key_name = var.mykey
+  ami                    = var.myami
+  instance_type          = var.instancetype
+  count                  = var.num
+  key_name               = var.mykey
   vpc_security_group_ids = [aws_security_group.tf-sec-gr.id]
   tags = {
     Name = "${element(var.tags, count.index)}-${local.user}"
@@ -64,21 +64,21 @@ resource "aws_security_group" "tf-sec-gr" {
 resource "null_resource" "config" {
   depends_on = [aws_instance.nodes[0]]
   connection {
-    host = aws_instance.nodes[0].public_ip
-    type = "ssh"
-    user = "ec2-user"
+    host        = aws_instance.nodes[0].public_ip
+    type        = "ssh"
+    user        = "ec2-user"
     private_key = file("~/.ssh/${var.mykeypem}")
     # Do not forget to define your key file path correctly!
   }
 
   provisioner "file" {
-    source = "./ansible.cfg"
+    source      = "./ansible.cfg"
     destination = "/home/ec2-user/ansible.cfg"
   }
 
   provisioner "file" {
     # Do not forget to define your key file path correctly!
-    source = "~/.ssh/${var.mykeypem}"
+    source      = "~/.ssh/${var.mykeypem}"
     destination = "/home/ec2-user/${var.mykeypem}"
   }
 
