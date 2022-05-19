@@ -1,4 +1,3 @@
-
 # Hands-on Ansible-05: Provisioning a Web Server and a Database Server with a Dynamic Website Using Ansible
 
 The purpose of this hands-on training is to give students the knowledge of provisioning a web and database server with a dynamic website.
@@ -12,78 +11,50 @@ At the end of this hands-on training, students will be able to;
 
 ![ho-04](ho-04.png)
 
-
 ## Outline
 
 - Part 1 - Build the Infrastructure (3 EC2 Instances with Red Hat Enterprise Linux 8 AMI)
-
 - Part 2 - Install Ansible on the Controller Node
-
 - Part 3 - Pinging the Target Nodes
-
-- Part 4 - Install, Start and Enable MariaDB 
-
+- Part 4 - Install, Start and Enable MariaDB
 - Part 5 - Configure User Credentials and Database Schema
-
 - Part 6 - Install, Start and Enable Apache Web Server and Other Dependencies
-
 - Part 7 - Pull the Code and Make Necessary Changes
 
 ## Part 1 - Build the Infrastructure
 
-- Get to the AWS Console and spin-up 3 EC2 Instances with ```Red Hat Enterprise Linux 8``` AMI.
-
+- Get to the AWS Console and spin-up 3 EC2 Instances with ``Red Hat Enterprise Linux 8`` AMI.
 - Configure the security groups as shown below:
 
-    - Controller Node ----> Port 22 SSH
-
-    - Target Node1 -------> Port 22 SSH, Port 3306 MYSQL/Aurora
-
-    - Target Node2 -------> Port 22 SSH, Port 80 HTTP
+  - Controller Node ----> Port 22 SSH
+  - Target Node1 -------> Port 22 SSH, Port 3306 MYSQL/Aurora
+  - Target Node2 -------> Port 22 SSH, Port 80 HTTP
 
 ## Part 2 - Install Ansible on the Controller Node
 
-- Connect to your ```Controller Node```.
-
+- Connect to your ``Controller Node``.
 - Optionally you can connect to your instances using VS Code.
 
-                    -------------------- OPTIONAL BELOW ----------------------
-
-- You can also use connect to the Controller Node via VS Code's ```Remote SSH``` Extension. 
-
-- Open up your VS Code editor. 
-
-- Click on the ```Extensions``` icon. 
-
-- Write down ```Remote - SSH``` on the search bar. 
-
+  -------------------- OPTIONAL BELOW ----------------------
+- You can also use connect to the Controller Node via VS Code's ``Remote SSH`` Extension.
+- Open up your VS Code editor.
+- Click on the ``Extensions`` icon.
+- Write down ``Remote - SSH`` on the search bar.
 - Click on the first option on the list.
-
 - Click on the install button.
-
 - When the extension is installed, restart your editor.
-
-- Click on the green button (```Open a Remote Window``` button) at the most bottom left.
-
-- Hit enter. (```Connect Current Window to Host...```)
-
-- Enter a name for your connection on the input field and click on ```Add New SSH Host``` option.
-
-- Enter your ssh connection command (```ssh -i <YOUR-PEM-FILE> ec2-user@<YOUR SERVER IP>```) on the input field and hit enter.
-
+- Click on the green button (``Open a Remote Window`` button) at the most bottom left.
+- Hit enter. (``Connect Current Window to Host...``)
+- Enter a name for your connection on the input field and click on ``Add New SSH Host`` option.
+- Enter your ssh connection command (``ssh -i <YOUR-PEM-FILE> ec2-user@<YOUR SERVER IP>``) on the input field and hit enter.
 - Hit enter again.
-
-- Click on the ```connect``` button at the bottom right.
-
-- Click on ```continue``` option.
-
-- Click on the ```Open Folder``` button and then click on the ```Ok``` button.
-
+- Click on the ``connect`` button at the bottom right.
+- Click on ``continue`` option.
+- Click on the ``Open Folder`` button and then click on the ``Ok`` button.
 - Lastly, open up a new terminal on the current window.
 
-                    -------------------- OPTIONAL ABOVE ----------------------
-
-- Run the commands below to install Python3 and Ansible. 
+  -------------------- OPTIONAL ABOVE ----------------------
+- Run the commands below to install Python3 and Ansible.
 
 ```bash
 $ sudo yum install -y python3 
@@ -107,23 +78,21 @@ $ ansible --version
 $ scp -i <PATH-TO-PEM-FILE> <PATH-TO-PEM-FILE> ec2-user@<CONTROLLER-NODE-IP>:/home/ec2-user
 ```
 
-- Make a directory named ```Ansible-Website-Project``` under the home directory and cd into it.
+- Make a directory named ``Ansible-Website-Project`` under the home directory and cd into it.
 
-```bash 
+```bash
 $ mkdir Ansible-Website-Project
 $ cd Ansible-Website-Project
 ```
 
-- Create a file named ```inventory.txt``` with the command below.
+- Create a file named ``inventory.txt`` with the command below.
 
 ```bash
 $ vi inventory.txt
 ```
 
 - Paste the content below into the inventory.txt file.
-
-- Along with the hands-on, public or private IPs can be used. 
-
+- Along with the hands-on, public or private IPs can be used.
 - <h4 style="color:red; display:inline;">DO NOT USE DNS NAMES AS THE ansible_host PROPERTY VALUE!</h4> Because database server expects an ip number as a user's host name.
 
 ```txt
@@ -132,7 +101,7 @@ db_server   ansible_host=<YOUR-DB-SERVER-IP>   ansible_user=ec2-user  ansible_ss
 web_server  ansible_host=<YOUR-WEB-SERVER-IP>  ansible_user=ec2-user  ansible_ssh_private_key_file=~/<YOUR-PEM-FILE>
 ```
 
-- Create a file named ```ping-playbook.yml``` and paste the content below.
+- Create a file named ``ping-playbook.yml`` and paste the content below.
 
 ```bash
 $ touch ping-playbook.yml
@@ -153,8 +122,7 @@ $ ansible-playbook ping-playbook.yml -i inventory.txt
 ```
 
 - Explain the output of the above command.
-
-- Create another file named ```ansible.cfg``` in the project directory.
+- Create another file named ``ansible.cfg`` in the project directory.
 
 ```
 [defaults]
@@ -173,9 +141,8 @@ $ ansible all -m ping -o
 
 ## Part4 - Install, Start and Enable MariaDB
 
-- Create another file named ```playbook.yml``` under the ```Ansible-Website-Project``` directory.
-
-- Paste the content below into the ```playbook.yml``` file.
+- Create another file named ``playbook.yml`` under the ``Ansible-Website-Project`` directory.
+- Paste the content below into the ``playbook.yml`` file.
 
 ```yml
 - name: db configuration
@@ -200,23 +167,21 @@ $ ansible all -m ping -o
         enabled: true
 ```
 
-- Explain what these 3 tasks and modules ([yum](https://docs.ansible.com/ansible/latest/collections/ansible/builtin/yum_module.html), [command](https://docs.ansible.com/ansible/latest/collections/ansible/builtin/command_module.html), [systemd](https://docs.ansible.com/ansible/latest/collections/ansible/builtin/systemd_module.html)) do respectively. 
-
-- Explain how ```become``` property affects the task.
-
+- Explain what these 3 tasks and modules ([yum](https://docs.ansible.com/ansible/latest/collections/ansible/builtin/yum_module.html), [command](https://docs.ansible.com/ansible/latest/collections/ansible/builtin/command_module.html), [systemd](https://docs.ansible.com/ansible/latest/collections/ansible/builtin/systemd_module.html)) do respectively.
+- Explain how ``become`` property affects the task.
 - Run the playbook.yaml
 
 ```bash
 ansible-playbook playbook.yml
 ```
 
-- Open up a new Terminal or Window and connect to the ```db_server``` instance and check if ```MariaDB``` is installed, started, and enabled. 
+- Open up a new Terminal or Window and connect to the ``db_server`` instance and check if ``MariaDB`` is installed, started, and enabled.
 
 ```bash
 mysql --version
 ```
 
-- Create a file named ```db-load-script.sql``` under /home/ec2-user folder, copy and paste the content below.
+- Create a file named ``db-load-script.sql`` under /home/ec2-user folder, copy and paste the content below.
 
 ```bash
 vi db-load-script.sql
@@ -229,7 +194,7 @@ CREATE TABLE products (id mediumint(8) unsigned NOT NULL auto_increment,Name var
 INSERT INTO products (Name,Price,ImageUrl) VALUES ("Laptop","100","c-1.png"),("Drone","200","c-2.png"),("VR","300","c-3.png"),("Tablet","50","c-5.png"),("Watch","90","c-6.png"),("Phone Covers","20","c-7.png"),("Phone","80","c-8.png"),("Laptop","150","c-4.png");
 ```
 
-- Append the content below into ```playbook.yml``` file for transferring the sql script into database server.
+- Append the content below into ``playbook.yml`` file for transferring the sql script into database server.
 
 ```yml
     - name: copy the sql script
@@ -243,9 +208,9 @@ INSERT INTO products (Name,Price,ImageUrl) VALUES ("Laptop","100","c-1.png"),("D
 ```bash
 $ ansible-playbook playbook.yml
 ```
-- Check if the file has been sent to the database server.
 
-- Append the content below into ```playbook.yml``` file in order to login to db_server and set a root password.
+- Check if the file has been sent to the database server.
+- Append the content below into ``playbook.yml`` file in order to login to db_server and set a root password.
 
 ```yml
 - name: Create password for the root user
@@ -256,8 +221,7 @@ $ ansible-playbook playbook.yml
         password: "clarus1234"
 ```
 
-- Create a file named ```.my.cnf``` under home directory on controller node.
-
+- Create a file named ``.my.cnf`` under home directory on controller node.
 - Paste the content below.
 
 ```conf
@@ -271,7 +235,7 @@ interactive_timeout=30000
 bind-address=0.0.0.0
 ```
 
-- Append the content below into ```playbook.yml``` file.
+- Append the content below into ``playbook.yml`` file.
 
 ```yml
 - name: copy the .my.cnf file
@@ -286,10 +250,9 @@ bind-address=0.0.0.0
 $ ansible-playbook playbook.yml
 ```
 
-
 ## Part 5 - Configure User Credentials and Database Schema
 
-- Append the content below into ```playbook.yml``` file in order to create a remote database user.
+- Append the content below into ``playbook.yml`` file in order to create a remote database user.
 
 ```yml
     - name: Create db user with name 'remoteUser' and password 'clarus1234' with all database privileges
@@ -309,7 +272,7 @@ $ ansible-playbook playbook.yml
 $ ansible-playbook playbook.yml
 ```
 
-- Append the content below into ```playbook.yml``` file in order to create a database schema for the products table.
+- Append the content below into ``playbook.yml`` file in order to create a database schema for the products table.
 
 ```yml
     - name: Create database schema
@@ -320,9 +283,8 @@ $ ansible-playbook playbook.yml
         state: present
 ```
 
-- Notice that this time the module name is ```mysql_db```.
-
-- Append the content below into ```playbook.yml``` file in order to check if the ```products``` table is already imported.
+- Notice that this time the module name is ``mysql_db``.
+- Append the content below into ``playbook.yml`` file in order to check if the ``products`` table is already imported.
 
 ```yml
     - name: check if the database has the table
@@ -335,15 +297,11 @@ $ ansible-playbook playbook.yml
         var: resultOfShowTables
 ```
 
-- Explain what these shell commands do. 
-
-- Emphasize that we have a new property called ```register```. 
-
-- Skip the explanation of the ```register``` property for now.
-
-- Explain the output of the ```debug module``` **after running the playbook**.
-
-- Append the content below int ```playbook.yml``` file in order to import the ```products``` table.
+- Explain what these shell commands do.
+- Emphasize that we have a new property called ``register``.
+- Skip the explanation of the ``register`` property for now.
+- Explain the output of the ``debug module`` **after running the playbook**.
+- Append the content below int ``playbook.yml`` file in order to import the ``products`` table.
 
 ```yml
     - name: Import database table
@@ -354,18 +312,15 @@ $ ansible-playbook playbook.yml
       when: resultOfShowTables.stdout == "" # This line checks if the table is already imported. If so this task doesn't run.
 ```
 
-- Explain that the previously registered task result ```resultOfShowTable``` has a property called stdout. Visit the [link](https://docs.ansible.com/ansible/latest/collections/ansible/builtin/shell_module.html#return-values) to show the returns of the ```shell``` module.
-
-- Explain that if the ```resultofShowTables.stdout``` gives null the database table will be imported. Otherwise, it won't be imported for not getting any error.
-
+- Explain that the previously registered task result ``resultOfShowTable`` has a property called stdout. Visit the [link](https://docs.ansible.com/ansible/latest/collections/ansible/builtin/shell_module.html#return-values) to show the returns of the ``shell`` module.
+- Explain that if the ``resultofShowTables.stdout`` gives null the database table will be imported. Otherwise, it won't be imported for not getting any error.
 - Run the command below to check if there is an error.
 
 ```bash
 $ ansible-playbook playbook.yml
 ```
 
-- Connect to the database instance to check if there is a table named ```products```.
-
+- Connect to the database instance to check if there is a table named ``products``.
 - Run the command below.
 
 ```bash
@@ -382,10 +337,9 @@ $ echo "USE ecomdb; show tables like 'products'; " | mysql
         state: restarted
 ```
 
-
 ## Part 6 - Install, Start and Enable Apache Web Server and Other Dependencies
 
-- Append the content below into the ```playbook.yml``` file 
+- Append the content below into the ``playbook.yml`` file
 
 ```yml
 - name: web server configuration
@@ -402,13 +356,10 @@ $ echo "USE ecomdb; show tables like 'products'; " | mysql
         state: latest
 ```
 
-- Emphasize that the ```become``` property can also be used at the play level.
-
-- Explain that the ```package``` module has the functionality to employ whatever if the package manager is.
-
-- Emphasize that the ```Git, Apache Web Server, PHP, and Php-to-Mysql``` packages will be installed.
-
-- Append the content below into the ```playbook.yml``` file.
+- Emphasize that the ``become`` property can also be used at the play level.
+- Explain that the ``package`` module has the functionality to employ whatever if the package manager is.
+- Emphasize that the ``Git, Apache Web Server, PHP, and Php-to-Mysql`` packages will be installed.
+- Append the content below into the ``playbook.yml`` file.
 
 ```yml
     - name: start the server and enable it
@@ -420,10 +371,9 @@ $ echo "USE ecomdb; show tables like 'products'; " | mysql
 
 - Explain that this block of configuration is used to start and enable the Apache Web Server.
 
-
 ## Part 7 - Pull the Code and Make Necessary Changes
 
-- Append the content below into the ```playbook.yml``` file.
+- Append the content below into the ``playbook.yml`` file.
 
 ```yml
     - name: clone the repo of the website
@@ -449,18 +399,16 @@ $ echo "USE ecomdb; show tables like 'products'; " | mysql
 ```
 
 - For the first task, explain that;
-    - The first line checks if the result of the ```ls -al /var/www/html | grep .git``` command is null.
-    - The second line clones the project content into /var/www/html directory.
 
-- Explain the output of the ```debug module``` **after running the playbook**.
-
-- For the third task, explain that the ```lineinfile``` module finds the file specified in the path value, searches for the regular expression specified in the ```regexp``` property, and replaces the matching line with the value of the ```line``` property. But this task is run only if the standard output of the first task is not "already cloned...". 
-
-- Append the content below into ```playbook.yml``` file.
+  - The first line checks if the result of the ``ls -al /var/www/html | grep .git`` command is null.
+  - The second line clones the project content into /var/www/html directory.
+- Explain the output of the ``debug module`` **after running the playbook**.
+- For the third task, explain that the ``lineinfile`` module finds the file specified in the path value, searches for the regular expression specified in the ``regexp`` property, and replaces the matching line with the value of the ``line`` property. But this task is run only if the standard output of the first task is not "already cloned...".
+- Append the content below into ``playbook.yml`` file.
 
 ```yml
     - selinux:
-        state: disabled    
+        state: disabled  
 
     - name: Restart service httpd
       service:
@@ -468,10 +416,8 @@ $ echo "USE ecomdb; show tables like 'products'; " | mysql
         state: restarted
 ```
 
-- Explain that we have to disable the ```Security Enhanced Linux``` in order to be able to query a remote database.
-
-- Shortly explain that the SELinux is a Linux kernel security module that provides a mechanism for supporting access control security policies. 
-
+- Explain that we have to disable the ``Security Enhanced Linux`` in order to be able to query a remote database.
+- Shortly explain that the SELinux is a Linux kernel security module that provides a mechanism for supporting access control security policies.
 - Run the command below.
 
 ```bash
@@ -479,3 +425,185 @@ $ ansible-playbook playbook.yml
 ```
 
 - Check if you can see the website on your browser.
+
+for Dynamic İnverntory
+
+install boto3
+
+control Node attach full acces mode
+
+inventory files name must be ending aws_ec2.yml
+
+for example dynamic_inventory.aws_ec2.yaml
+
+```
+plugin: aws_ec2
+regions:
+  - "us-east-1"
+keyed_groups:
+  - key: tags.Name
+filters:
+  instance-state-name : running
+  tag:env: oliver
+compose:
+  ansible_host: public_ip_address
+```
+
+```
+plugin: aws_ec2
+regions:
+  - "us-east-1"
+keyed_groups:
+  - key: tags.Name
+filters:
+  instance-state-name : running
+  tag:env: oliver
+compose:
+  ansible_host: public_ip_address
+```
+
+example:
+
+
+
+```
+
+```
+
+[11:02](https://awsdevops-10.slack.com/archives/C02QVKUM33J/p1652990565305129)
+
+```
+- name: db configuration
+  hosts: tag_db_server_oliver
+  tasks:
+    - debug:
+        var: ansible_host
+    - debug:
+        var: foo
+    - debug:
+        var: boo
+    - debug:
+        var: key
+    - name: install mariadb and PyMySQL
+      become: yes
+      yum:
+        name: 
+            - mariadb-server
+            - python3-PyMySQL
+        state: latest
+
+    # - name: start mariadb
+    #   become: yes  
+    #   command: systemctl start mariadb
+
+    - name: enable mariadb
+      become: yes
+      systemd: 
+        name: mariadb
+        state: started
+        enabled: true
+
+    - name: copy the sql script
+      copy:
+        src: ~/db-load-script.sql
+        dest: ~/
+
+    - name: Create password for the root user
+      mysql_user:
+        login_password: ''
+        login_user: root
+        name: root
+        password: "clarus1234"
+
+    - name: copy the .my.cnf file
+      copy:
+        src: ~/.my.cnf
+        dest: ~/
+
+    - name: Create db user with name 'remoteUser' and password 'clarus1234' with all database privileges
+      mysql_user:
+        name: remoteUser
+        password: "clarus1234"
+        login_user: "root"
+        login_password: "clarus1234"
+        priv: '*.*:ALL,GRANT'
+        state: present
+        host: "172.31.25.9"
+
+    - name: Create database schema
+      mysql_db:
+        name: ecomdb
+        login_user: root
+        login_password: "clarus1234"
+        state: present
+
+    - name: check if the database has the table
+      shell: |
+        echo "USE ecomdb; show tables like 'products'; " | mysql
+      register: resultOfShowTables
+
+    - name: DEBUG
+      debug:
+        var: resultOfShowTables
+
+    - name: Import database table
+      mysql_db:
+        name: ecomdb   # This is the database schema name.
+        state: import  # This module is not idempotent when the state property value is import.
+        target: ~/db-load-script.sql # This script creates the products table.
+      when: resultOfShowTables.stdout == "" # This line checks if the table is already imported. If so this task doesn't run.
+
+    - name: restart mariadb
+      become: yes
+      service: 
+        name: mariadb
+        state: restarted
+
+- name: web server configuration
+  hosts: tag_web_server_oliver
+  become: yes
+  tasks: 
+    - name: install the latest version of Git, Apache, Php, Php-Mysqlnd
+      package:
+        name: 
+          - git
+          - httpd
+          - php
+          - php-mysqlnd
+        state: latest
+
+    - name: start the server and enable it
+      service:
+        name: httpd
+        state: started
+        enabled: yes
+
+    - name: clone the repo of the website
+      shell: |
+        if [ -z "$(ls -al /var/www/html | grep .git)" ]; then
+          git clone https://github.com/kodekloudhub/learning-app-ecommerce.git /var/www/html/
+          echo "ok"
+        else
+          echo "already cloned..."
+        fi
+      register: result
+
+    - name: DEBUG
+      debug:
+        var: result
+
+    - name: Replace a default entry with our own
+      lineinfile:
+        path: /var/www/html/index.php
+        regexp: '172\.20\.1\.101'
+        line: "$link = mysqli_connect('172.31.16.223', 'remoteUser', 'clarus1234', 'ecomdb');"
+      when: not result.stdout == "already cloned..."
+
+    - selinux:
+        state: disabled  
+
+    - name: Restart service httpd
+      service:
+        name: httpd
+        state: restarted
+```
