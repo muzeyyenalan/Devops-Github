@@ -5,17 +5,17 @@
 
 provider "aws" {
   region = "us-east-1"
-  access_key = ""
-  secret_key = ""
+  #access_key = ""
+  #secret_key = ""
   //  If you have entered your credentials in AWS CLI before, you do not need to use these arguments.
 }
 
 resource "aws_instance" "docker-server" {
   ami             = "ami-02e136e904f3da870"
   instance_type   = "t2.micro"
-  key_name        = "personal-aws"
+  key_name        = "walter-pem"
   //  Write your pem file name
-  security_groups = ["sec-group"]
+  vpc_security_group_ids = [aws_security_group.sec-gr.id]
   tags = {
     Name = "docker-compose-instance-1"
   }
@@ -36,7 +36,7 @@ resource "aws_instance" "docker-server" {
 }
 
 
-  resource "aws_security_group" "sec-gr" {
+resource "aws_security_group" "sec-gr" {
     name = "docker-compose-sec-group"
     tags = {
       Name = "docker-compose-sec-group"
@@ -52,6 +52,13 @@ resource "aws_instance" "docker-server" {
       from_port   = 22
       protocol    = "tcp"
       to_port     = 22
+      cidr_blocks = ["0.0.0.0/0"]
+    }
+
+    ingress {
+      from_port   = 5000
+      protocol    = "tcp"
+      to_port     = 5000
       cidr_blocks = ["0.0.0.0/0"]
     }
 
