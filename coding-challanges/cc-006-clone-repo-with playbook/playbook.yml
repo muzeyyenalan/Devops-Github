@@ -1,0 +1,36 @@
+--- 
+- name: ping them all
+  hosts: all
+  tasks:
+    - name: pinging
+      ping:
+
+- name: İnstall git package
+  hosts: all 
+  become: true
+  tasks:
+      - name: Installing git
+        yum:
+          name: git
+          state: present
+# - name: 
+#   hosts: all
+#   become: true
+#   tasks:
+#    - name: Clone a github repository
+#      git:
+#        repo: https://raw.githubusercontent.com/muzeyyenalan/my-projects/main/aws1/projects/Project-001-kittens-carousel-static-website-ec2/kittens-carousel-static-website.yml
+#        dest: /home/git/repos/
+#        clone: yes
+#        update: yes
+ 
+- name: git install
+  hosts: all
+  tasks:
+   - name: Clone a github repository
+     git:
+       repo: https://github.com/muzeyyenalan/Devops-Github
+       dest: /home/ec2-user/repos/
+       version: main
+       clone: yes
+       update: yes
