@@ -304,13 +304,10 @@ $ vi main.yml
 ```yml
 - name: use galaxy nginx role
   hosts: web_server_2
-  # user: ec2-user
   become: true
-  # vars:
-  #   ansible_ssh_private_key_file: "/home/ec2-user/alex.pem"
 
   roles:
-    - role: geerlingguy.nginx
+    - geerlingguy.nginx
 ```
 
 - Run the playbook.
