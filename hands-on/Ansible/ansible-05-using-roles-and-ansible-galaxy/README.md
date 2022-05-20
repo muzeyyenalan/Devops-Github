@@ -70,7 +70,7 @@ $ vi inventory.txt
 
 - Along with the hands-on, public or private IPs can be used.
 
-```txt
+```ini
 [servers]
 web_server_1   ansible_host=<YOUR-DB-SERVER-IP>   ansible_user=ec2-user  ansible_ssh_private_key_file=~/<YOUR-PEM-FILE>
 web_server_2  ansible_host=<YOUR-WEB-SERVER-IP>  ansible_user=ubuntu  ansible_ssh_private_key_file=~/<YOUR-PEM-FILE>
@@ -78,7 +78,7 @@ web_server_2  ansible_host=<YOUR-WEB-SERVER-IP>  ansible_user=ubuntu  ansible_ss
 ```
 - Create file named ```ansible.cfg``` under the the ```working-with-roles``` directory.
 
-```cfg
+```conf
 [defaults]
 host_key_checking = False
 inventory=inventory.txt
@@ -110,20 +110,21 @@ $ ansible-playbook ping-playbook.yml
 - Explain the output of the above command.
 
 
-
 ## Part 2 - Using Ansible Roles
 
 - Install apache server and restart it with using Ansible roles.
 
+```bash
 ansible-galaxy init /home/ec2-user/ansible/roles/apache
-
-
+```
+```bash
 cd /home/ec2-user/ansible/roles/apache
 ll
 sudo yum install tree
 tree
+```
 
-- Create tasks/main.yml with the following.
+- Create `tasks/main.yml` with the following.
 
 vi tasks/main.yml
 
@@ -145,12 +146,12 @@ vi tasks/main.yml
     enabled: yes
 ```
 
-- Create a playbook named "role1.yml".
+- Create a playbook named `role1.yml`.
 
 cd /home/ec2-user/working-with-roles/
 vi role1.yml
 
-
+```yml
 ---
 - name: Install and Start apache
   hosts: web_server_1
@@ -159,23 +160,21 @@ vi role1.yml
     - apache
 ```
 
-
 - Run the command below 
+
 ```bash
 $ ansible-playbook role1.yml
 ```
 
-
 - (if you will use same server, uninstall the apache)
-
 
 ## Part 3 - Using Ansible Roles from Ansible Galaxy
 
-- Go to Ansible Galaxy web site (www.galaxy.ansible.com)
+- Go to Ansible Galaxy web site (`www.galaxy.ansible.com`)
 
 - Click the Search option
 
-- Write nginx
+- Write `nginx`
 
 - Explain the difference beetween collections and roles
 
@@ -185,7 +184,7 @@ $ ansible-playbook role1.yml
 
 ```bash
 $ ansible-galaxy search nginx
-```
+
 
 Stdout:
 ```
@@ -206,7 +205,7 @@ Found 1494 roles matching your search. Showing first 1000.
 
  - there are lots of. Lets filter them.
 
- ```bash
+```bash
  $ ansible-galaxy search nginx --platform EL
 ```
 "EL" for centos 
@@ -217,19 +216,19 @@ Found 1494 roles matching your search. Showing first 1000.
 $ ansible-galaxy search nginx --platform EL | grep geerl
 
 Stdout:
-```
+
 geerlingguy.nginx                                            Nginx installation for Linux, FreeBSD and OpenBSD.
 geerlingguy.php                                              PHP for RedHat/CentOS/Fedora/Debian/Ubuntu.
 geerlingguy.pimpmylog                                        Pimp my Log installation for Linux
 geerlingguy.varnish                                          Varnish for Linux.
-
 ```
 - Install it:
 
+```bash
 $ ansible-galaxy install geerlingguy.nginx
 
 Stdout:
-```
+
 - downloading role 'nginx', owned by geerlingguy
 - downloading role from https://github.com/geerlingguy/ansible-role-nginx/archive/2.8.0.tar.gz
 - extracting geerlingguy.nginx to /home/ec2-user/.ansible/roles/geerlingguy.nginx
@@ -238,6 +237,7 @@ Stdout:
 
 - Inspect the role:
 
+```bash
 $ cd /home/ec2-user/ansible/roles/geerlingguy.nginx
 
 $ ls
@@ -248,9 +248,10 @@ $ ls
 
 main.yml             setup-Debian.yml   setup-OpenBSD.yml  setup-Ubuntu.yml
 setup-Archlinux.yml  setup-FreeBSD.yml  setup-RedHat.yml   vhosts.yml
-
+```
+```bash
 $ vi main.yml
-
+```
 ```yml
 ---
 # Variable setup.
@@ -298,50 +299,51 @@ $ vi main.yml
 
 - # use it in playbook:
 
-- Create a playbook named "playbook-nginx.yml"
+- Create a playbook named `playbook-nginx.yml`
 
 ```yml
 - name: use galaxy nginx role
   hosts: web_server_2
-  # user: ec2-user
   become: true
-  # vars:
-  #   ansible_ssh_private_key_file: "/home/ec2-user/alex.pem"
 
   roles:
-    - role: geerlingguy.nginx
+    - geerlingguy.nginx
 ```
 
 - Run the playbook.
 
+```bash
 $ ansible-playbook playbook-nginx.yml
+```
 
 - List the roles you have:
 
+```bash
 $ ansible-galaxy list
 
 Stdout:
-```
-- geerlingguy.elasticsearch, 5.0.0
+
+- apache, (unknown version)
 - geerlingguy.mysql, 3.3.0
 ```
 
 # Optional
 
-* As a Nioyatech we need to create an instance image. At this image we want to use some software such as docker and promeheus. So every instance will be created with this instance image. We are also planning to update this image every 6 months. So we can update docker and prometheus software versions ater 6 months. We need to re-usable configs to do that. Lets talk about this situation.
+* As a Nioyatech we need to create an instance image. At this image we want to use some software such as docker and prometheus. So every instance will be created with this instance image. We are also planning to update this image every 6 months. So we can update docker and prometheus software versions ater 6 months. We need to re-usable configs to do that. Lets talk about this situation.
 
 * First create a new instance with Ubuntu 20.04 instance image. AMI Number: ami-04505e74c0741db8d
 
 * We will create declarative file to download ansible roles, lets start!
 
 * First install git with:
-```
+
+```bash
 sudo yum install git
 ```
 
-* Create a file which name is role_requirements.yml:
+* Create a file which name is `role_requirements.yml`:
 
-```
+```yml
 - src: git+https://github.com/geerlingguy/ansible-role-docker
   name: docker
   version: 2.9.0
@@ -358,7 +360,7 @@ sudo yum install git
 
 Then run this command:
 
-```
+```bash
 ansible-galaxy install -r role_requirements.yml
 ```
 
@@ -366,13 +368,13 @@ ansible-galaxy install -r role_requirements.yml
 
 * Additionally create a role named with common:
 
-```
+```bash
 ansible-galaxy init /home/ec2-user/ansible/roles/common
 ```
 
 * Then create a playbook file to create instance image.
 
-```
+```yml
 ---
 -
   hosts: instance_image
@@ -391,7 +393,7 @@ ansible-galaxy init /home/ec2-user/ansible/roles/common
 
 * When you get ntp error, go and customize common role from ansible/roles/common/tasks/main.yml
 
-```
+```yml
 ---
 # tasks file for /home/ec2-user/ansible/roles/common/tasks/main.yml:
 - name: Common Tasks
@@ -415,7 +417,8 @@ ansible-galaxy init /home/ec2-user/ansible/roles/common
 ```
 
 * Also add a slack notification that shows ansible deployment is finished. 
-```
+
+```yml
 ---
 -
   hosts: instance_image
@@ -434,7 +437,7 @@ ansible-galaxy init /home/ec2-user/ansible/roles/common
 
 common/slack.yml is like:
 
-```
+```yml
 ---
 - name: Send slack notification
   slack:
