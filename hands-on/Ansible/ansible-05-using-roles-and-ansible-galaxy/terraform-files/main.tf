@@ -19,7 +19,7 @@ provider "aws" {
 }
 
 resource "aws_instance" "nodes" {
-  ami = var.myami
+  ami = element(var.myami, count.index)
   instance_type = var.instancetype
   count = var.num
   key_name = var.mykey
