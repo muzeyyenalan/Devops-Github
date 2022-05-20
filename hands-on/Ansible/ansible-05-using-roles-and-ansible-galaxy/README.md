@@ -323,7 +323,7 @@ $ ansible-galaxy list
 
 Stdout:
 
-- geerlingguy.elasticsearch, 5.0.0
+- apache, (unknown version)
 - geerlingguy.mysql, 3.3.0
 ```
 
