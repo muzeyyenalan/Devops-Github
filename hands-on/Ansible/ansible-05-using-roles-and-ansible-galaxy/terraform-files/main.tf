@@ -69,7 +69,7 @@ resource "null_resource" "config" {
 
   provisioner "file" {
     source = "./ansible.cfg"
-    destination = "/home/ec2-user/ansible.cfg"
+    destination = "/home/ec2-user/.ansible.cfg"
   }
 
   provisioner "file" {
