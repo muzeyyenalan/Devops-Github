@@ -432,10 +432,10 @@ ansible-galaxy init /home/ec2-user/ansible/roles/common
     - ansible-prometheus-node-exporter
 
   tasks:
-   - import_tasks: 'common/slack.yml'     
+   - import_tasks: './slack.yml'     
 ```
 
-common/slack.yml is like:
+./slack.yml is like:
 
 ```yml
 ---
