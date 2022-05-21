@@ -1,4 +1,4 @@
-# Coding Challenge - 008 : Launch a EC2 instance Using Ansible Playbook 
+# Coding Challenge - 007 : Launch a EC2 instance Using Ansible Playbook 
 
 Purpose of the this coding challenge is to write a ansible playbook that launch a ec2 instance.
 
