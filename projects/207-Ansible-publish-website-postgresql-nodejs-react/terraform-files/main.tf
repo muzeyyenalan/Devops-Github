@@ -16,7 +16,7 @@ provider "aws" {
 }
 
 variable "tags" {
-  default = ["postgrsql", "nodejs", "react"]
+  default = ["postgresql", "nodejs", "react"]
 }
 
 resource "aws_instance" "control_node" {
