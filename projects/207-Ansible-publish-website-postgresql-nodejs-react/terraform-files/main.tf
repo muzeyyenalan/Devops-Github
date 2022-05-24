@@ -20,7 +20,7 @@ variable "tags" {
 }
 
 resource "aws_instance" "control_node" {
-  ami = "ami-0b0af3577fe5e3532"
+  ami = "ami-0f095f89ae15be883"
   instance_type = "t2.medium"
   key_name = "oliver"
   iam_instance_profile = aws_iam_instance_profile.ec2full.name
@@ -31,7 +31,7 @@ resource "aws_instance" "control_node" {
   }
 }
 resource "aws_instance" "managed_nodes" {
-  ami = "ami-0b0af3577fe5e3532"
+  ami = "ami-0f095f89ae15be883"
   count = 3
   instance_type = "t2.micro"
   key_name = "oliver"
@@ -68,9 +68,9 @@ resource "aws_iam_instance_profile" "ec2full" {
 }
 
 resource "aws_security_group" "tf-sec-gr" {
-  name = "project207-sec-gr"
+  name = "project207-sec-gr-oliver"
   tags = {
-    Name = "project207-sec-gr"
+    Name = "project207-sec-gr-oliver"
   }
 
   ingress {
@@ -112,7 +112,7 @@ resource "null_resource" "config" {
     host = aws_instance.control_node.public_ip
     type = "ssh"
     user = "ec2-user"
-    private_key = file("~/oliver.pem")
+    private_key = file("~/.ssh/oliver.pem")
   }
 
   provisioner "file" {
@@ -126,7 +126,7 @@ resource "null_resource" "config" {
   }
 
   provisioner "file" {
-    source = "~/oliver.pem"
+    source = "~/.ssh/oliver.pem"
     destination = "/home/ec2-user/oliver.pem"
   }
 
