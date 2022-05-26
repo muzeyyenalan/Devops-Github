@@ -41,6 +41,10 @@ resource "aws_instance" "managed_nodes" {
     stack = "ansible_project"
     environment = "development"
   }
+  user_data = <<EOF
+      #! /bin/bash
+      yum update -y
+      EOF
 }
 
 resource "aws_iam_role" "ec2full" {
