@@ -1,9 +1,12 @@
-//User needs to select appropriate key name and should put his/her own pem file in the relevant places when launching the template.
+//This Terraform Template creates 4 Ansible Machines on EC2 Instances
+//Ansible Machines will run on Red Hat Enterprise Linux 8 with custom security group
+//allowing SSH (22), 5000, 3000 and 5432 connections from anywhere.
+//User needs to select appropriate variables form "tfvars" file when launching the instance.
 
 terraform {
   required_providers {
     aws = {
-      source = "hashicorp/aws"
+      source  = "hashicorp/aws"
       version = "~> 4.0"
     }
   }
@@ -15,14 +18,10 @@ provider "aws" {
   #  access_key = ""
 }
 
-variable "tags" {
-  default = ["postgresql", "nodejs", "react"]
-}
-
 resource "aws_instance" "control_node" {
-  ami = "ami-0f095f89ae15be883"
-  instance_type = "t2.medium"
-  key_name = "oliver"
+  ami = var.myami
+  instance_type = var.controlinstancetype
+  key_name = var.mykey
   iam_instance_profile = aws_iam_instance_profile.ec2full.name
   vpc_security_group_ids = [aws_security_group.tf-sec-gr.id]
   tags = {
@@ -30,21 +29,19 @@ resource "aws_instance" "control_node" {
     stack = "ansible_project"
   }
 }
-resource "aws_instance" "managed_nodes" {
-  ami = "ami-0f095f89ae15be883"
-  count = 3
-  instance_type = "t2.micro"
-  key_name = "oliver"
+
+resource "aws_instance" "nodes" {
+  ami = var.myami
+  instance_type = var.instancetype
+  count = var.num
+  key_name = var.mykey
   vpc_security_group_ids = [aws_security_group.tf-sec-gr.id]
   tags = {
     Name = "ansible_${element(var.tags, count.index )}"
     stack = "ansible_project"
     environment = "development"
   }
-  user_data = <<EOF
-      #! /bin/bash
-      yum update -y
-      EOF
+  user_data = file("userdata.sh")
 }
 
 resource "aws_iam_role" "ec2full" {
@@ -72,9 +69,9 @@ resource "aws_iam_instance_profile" "ec2full" {
 }
 
 resource "aws_security_group" "tf-sec-gr" {
-  name = "project207-sec-gr-oliver"
+  name = var.mysecgr
   tags = {
-    Name = "project207-sec-gr-oliver"
+    Name = var.mysecgr
   }
 
   ingress {
@@ -116,12 +113,13 @@ resource "null_resource" "config" {
     host = aws_instance.control_node.public_ip
     type = "ssh"
     user = "ec2-user"
-    private_key = file("~/.ssh/oliver.pem")
+    private_key = file("~/.ssh/${var.mykeypem}")
+    # Do not forget to define your key file path correctly!
   }
 
   provisioner "file" {
     source = "./ansible.cfg"
-    destination = "/home/ec2-user/ansible.cfg"
+    destination = "/home/ec2-user/.ansible.cfg"
   }
 
   provisioner "file" {
@@ -130,17 +128,18 @@ resource "null_resource" "config" {
   }
 
   provisioner "file" {
-    source = "~/.ssh/oliver.pem"
-    destination = "/home/ec2-user/oliver.pem"
+    # Do not forget to define your key file path correctly!
+    source = "~/.ssh/${var.mykeypem}"
+    destination = "/home/ec2-user/${var.mykeypem}"
   }
 
   provisioner "remote-exec" {
     inline = [
-      "sudo hostnamectl set-hostname Ansible_control",
+      "sudo hostnamectl set-hostname Control-Node",
       "sudo yum install -y python3",
       "pip3 install --user ansible",
       "pip3 install --user boto3",
-      "chmod 400 oliver.pem"
+      "chmod 400 ${var.mykeypem}"
     ]
   }
 
