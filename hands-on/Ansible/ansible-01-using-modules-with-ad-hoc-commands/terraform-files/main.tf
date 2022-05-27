@@ -14,10 +14,7 @@ terraform {
 
 provider "aws" {
   region = "us-east-1"
-<<<<<<< HEAD
   #profile = "cw-training"
-=======
->>>>>>> e8ec29ab8755c563cc07aff48cd64990c9f5a2a6
   # secret_key = ""
   # access_key = ""
 }

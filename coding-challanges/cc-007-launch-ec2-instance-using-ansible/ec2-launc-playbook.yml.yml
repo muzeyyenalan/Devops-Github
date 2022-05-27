@@ -1,0 +1,14 @@
+- name: ec2 launcher
+  hosts: localhost
+  tasks:
+  - name: ec2 instance
+    ec2:
+      key_name: aduncan
+      instance_type: t2.micro       
+      image: ami-08e4e35cccc6189f4  
+      region: us-east-1
+      group: default
+      count: 1
+      vpc_subnet_id: subnet-c41ba589
+      assign_public_ip: no
+

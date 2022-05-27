@@ -148,13 +148,13 @@ sudo systemctl restart kubelet
 - Let `kubeadm` prepare the environment for you. Note: Do not forget to change `<ec2-private-ip>` with your master node private IP.
 
 ```bash
-sudo kubeadm init --apiserver-advertise-address=<ec2-private-ip> --pod-network-cidr=10.244.0.0/16
+sudo kubeadm init --apiserver-advertise-address=172.31.30.222 --pod-network-cidr=10.244.0.0/16
 ```
 
 > :warning: **Note**: If you are working on `t2.micro` or `t2.small` instances,  use the command with `--ignore-preflight-errors=NumCPU` as shown below to ignore the errors.
 
 >```bash
->sudo kubeadm init --apiserver-advertise-address=<ec2 private ip> --pod-network-cidr=10.244.0.0/16 --ignore-preflight-errors=NumCPU
+>sudo kubeadm init --apiserver-advertise-address=172.31.30.222--pod-network-cidr=10.244.0.0/16 --ignore-preflight-errors=NumCPU
 >```
 
 > **Note**: There are a bunch of pod network providers and some of them use pre-defined `--pod-network-cidr` block. Check the documentation at the References part. We will use Flannel for pod network and Flannel uses 10.244.0.0/16 CIDR block. 

@@ -1,0 +1,13 @@
+- name: Git Operations
+  hosts: node1
+  tasks: 
+  - name: install git
+    yum:
+      name: git
+      state: present
+
+  - name: clone repo
+    git:
+      repo: https://github.com/TylerCounter/project-xv.git
+      version: main
+      dest: /home/ec2-user/project-xv
