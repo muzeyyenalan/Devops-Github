@@ -1,0 +1,4 @@
+---
+container_path: /home/ec2-user/react
+container_name: muzeyyen_react
+image_name: muzeyyencw/react # vars file for react

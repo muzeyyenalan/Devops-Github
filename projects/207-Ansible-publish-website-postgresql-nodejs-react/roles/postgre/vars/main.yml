@@ -1,0 +1,4 @@
+---
+postgre_container: /home/ec2-user/postgresql
+container_name: muzeyyen_postgre
+image_name: muzeyyencw/postgre # vars file for postgre

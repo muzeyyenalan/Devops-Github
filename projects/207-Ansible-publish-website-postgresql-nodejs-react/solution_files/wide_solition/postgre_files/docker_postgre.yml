@@ -1,0 +1,108 @@
+---
+- name: configure postgresql node
+  hosts: _ansible_postgresql
+  become: true
+  vars_files:
+    - secret.yml
+  tasks:
+    - name: upgrade all packages
+      yum:                      # Shell module yerine yum module kullandik, her defasinda idempotency geregi ayni islemleri tekrar yapmak zorunda kalmaz.
+        name: '*'
+        state: latest
+    # we may need to uninstall any existing docker files from the centos repo first. 
+    - name: Remove docker if installed from CentOS repo
+      yum:
+        name: "{{ item }}"
+        state: removed
+      with_items:
+        - docker
+        - docker-client
+        - docker-client-latest
+        - docker-common
+        - docker-latest
+        - docker-latest-logrotate
+        - docker-logrotate
+        - docker-engine
+    - name: install yum-utils
+      yum:
+        name: yum-utils
+        state: latest
+  # yum-utils is a collection of tools and programs for managing yum repositories, installing debug packages, source packages, extended information from repositories and administration.
+
+    - name: Add Docker repo        # How to install docker in 'ansible.docs' get this content 
+      get_url:
+        url: https://download.docker.com/linux/centos/docker-ce.repo
+        dest: /etc/yum.repos.d/docker-ce.repo
+    - name: Install Docker
+      package:
+        name: docker-ce
+        state: latest
+    - name: Install pip    # docker sdk yukleyebilmek icin bunu yukluyoruz
+      package: 
+        name: python3-pip
+        state: present
+    - name: Install docker sdk    #'Software development key' docker modulleri arka planda python ile calisir, asagidaki docker modulleri icin sdk install gerekli
+      pip:                         
+        name: docker
+    - name: Add user ec2-user to docker group
+      user:
+        name: ec2-user
+        groups: docker
+        append: yes
+
+    - name: Start Docker service
+      service:
+        name: docker
+        state: started
+        enabled: yes
+
+    - name: create build directory    #We need build directory inside postgresql target to send docker image
+      file:                                # 'How to create directory by file module' for the search
+        path: /home/ec2-user/postgresql
+        state: directory
+        owner: root
+        group: root
+        mode: '0755'
+
+    - name: copy the sql script
+      copy:
+        src: /home/ec2-user/student_files/todo-app-pern/database/init.sql
+        dest: /home/ec2-user/postgresql
+
+    - name: copy the Dockerfile
+      copy:
+        src: /home/ec2-user/student_files/todo-app-pern/database/Dockerfile
+        dest: /home/ec2-user/postgresql
+
+    - name: remove container and image if exists     #Remove previous container and image inside target if available 
+      shell: "docker ps -q --filter 'name=muzeyyen_postgre' | grep -q . && docker stop muzeyyen_postgre && docker rm -fv muzeyyen_postgre && docker image rm -f muzeyyencw/postgre || echo 'Not Found'"
+
+    - name: build container image
+      docker_image:
+        name: muzeyyencw/postgre
+        build:
+          path: /home/ec2-user/postgresql
+        source: build
+        state: present
+
+    - name: Launch postgresql docker container
+      docker_container:
+        name: muzeyyen_postgre
+        image: muzeyyencw/postgre
+        state: started
+        ports: 
+        - "5432:5432"
+        env:
+          POSTGRES_PASSWORD: "{{ password }}"
+        volumes:
+          - /db-data:/var/lib/postgresql/data
+      register: docker_info
+    - name: print the container info 
+      debug:
+        var: container_info
+
+# 96. satirda password'u secret.yml ile yapmak icin;
+# $ cd ansible
+# $ ansible-vault create secret.yml
+# After entering vault password (this will be ask when we run ansible-playbook docker_postgre.yml), 
+# vim file will open, type in this file "password: Pp123456789"

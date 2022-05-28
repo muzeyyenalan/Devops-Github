@@ -19,15 +19,9 @@ provider "aws" {
 }
 
 resource "aws_instance" "control_node" {
-<<<<<<< HEAD
-  ami = "ami-0f095f89ae15be883"
-  instance_type = "t2.medium"
-  key_name = "firstkey"
-=======
   ami = var.myami
   instance_type = var.controlinstancetype
   key_name = var.mykey
->>>>>>> 8eb9fe008189ea95f3340e1f39a75f59a212de6e
   iam_instance_profile = aws_iam_instance_profile.ec2full.name
   vpc_security_group_ids = [aws_security_group.tf-sec-gr.id]
   tags = {
@@ -35,20 +29,12 @@ resource "aws_instance" "control_node" {
     stack = "ansible_project"
   }
 }
-<<<<<<< HEAD
-resource "aws_instance" "managed_nodes" {
-  ami = "ami-0f095f89ae15be883"
-  count = 3
-  instance_type = "t2.micro"
-  key_name ="firstkey"
-=======
 
 resource "aws_instance" "nodes" {
   ami = var.myami
   instance_type = var.instancetype
   count = var.num
   key_name = var.mykey
->>>>>>> 8eb9fe008189ea95f3340e1f39a75f59a212de6e
   vpc_security_group_ids = [aws_security_group.tf-sec-gr.id]
   tags = {
     Name = "ansible_${element(var.tags, count.index )}"
@@ -83,15 +69,9 @@ resource "aws_iam_instance_profile" "ec2full" {
 }
 
 resource "aws_security_group" "tf-sec-gr" {
-<<<<<<< HEAD
-  name = "project207-sec-gr-firstkey"
-  tags = {
-    Name = "project207-sec-gr-firstkey"
-=======
   name = var.mysecgr
   tags = {
     Name = var.mysecgr
->>>>>>> 8eb9fe008189ea95f3340e1f39a75f59a212de6e
   }
 
   ingress {
@@ -133,12 +113,8 @@ resource "null_resource" "config" {
     host = aws_instance.control_node.public_ip
     type = "ssh"
     user = "ec2-user"
-<<<<<<< HEAD
-    private_key = file("~/.ssh/firstkey.pem")
-=======
     private_key = file("~/.ssh/${var.mykeypem}")
     # Do not forget to define your key file path correctly!
->>>>>>> 8eb9fe008189ea95f3340e1f39a75f59a212de6e
   }
 
   provisioner "file" {
@@ -152,14 +128,9 @@ resource "null_resource" "config" {
   }
 
   provisioner "file" {
-<<<<<<< HEAD
-    source = "~/.ssh/firstkey.pem"
-    destination = "/home/ec2-user/firstkey.pem"
-=======
     # Do not forget to define your key file path correctly!
     source = "~/.ssh/${var.mykeypem}"
     destination = "/home/ec2-user/${var.mykeypem}"
->>>>>>> 8eb9fe008189ea95f3340e1f39a75f59a212de6e
   }
 
   provisioner "remote-exec" {
@@ -168,11 +139,7 @@ resource "null_resource" "config" {
       "sudo yum install -y python3",
       "pip3 install --user ansible",
       "pip3 install --user boto3",
-<<<<<<< HEAD
-      "chmod 400 firstkey.pem"
-=======
       "chmod 400 ${var.mykeypem}"
->>>>>>> 8eb9fe008189ea95f3340e1f39a75f59a212de6e
     ]
   }
 
