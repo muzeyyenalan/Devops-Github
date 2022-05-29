@@ -1,6 +1,6 @@
 ## Part 1 - Launch the instances
 
-- Create 4 `Red Hat Enterprise Linux 8 (HVM), SSD Volume Type - ami-0b0af3577fe5e3532 (64-bit x86) / ami-01fc429821bf1f4b4 (64-bit Arm)` ami. 
+- Create 4 `Red Hat Enterprise Linux 8 (HVM), ami-0f095f89ae15be883 ami. 
 
 - ansible_control (t2.medium) (tag: Name=ansible_control)
 
