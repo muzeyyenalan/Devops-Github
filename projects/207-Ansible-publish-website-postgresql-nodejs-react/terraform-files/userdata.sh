@@ -1,3 +1,3 @@
 #! /bin/bash
-hostnamectl set-hostname manged-node
+hostnamectl set-hostname managed-node
 dnf update -y
