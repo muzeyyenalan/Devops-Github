@@ -1,8 +1,8 @@
 //aws_access_key = ""
 //aws_secret_key = ""
 myami = "ami-0f095f89ae15be883"
-mykey = "clarus"
-mykeypem = "clarus.pem"
+mykey = "aduncan"
+mykeypem = "aduncan.pem"
 tags = ["postgresql", "nodejs", "react"]
 instancetype = "t2.micro"
 controlinstancetype = "t2.medium"
