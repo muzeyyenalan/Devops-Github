@@ -60,6 +60,39 @@ At the end of the this hands-on training, students will be able to;
 xxxxxxxxxxxx.dkr.ecr.us-east-1.amazonaws.com/student1-repo/todo-app
 ```
 
+### Creating a lifecycle policy:
+
+- A lifecycle policy allows you to create a set of rules that expire unused repository images. The following procedure shows you how to create a lifecycle policy. You should expect that after creating a lifecycle policy, the affected images are expired within 24 hours.
+
+- Create a lifecycle policy (AWS Management Console):
+
+- From the navigation bar, choose the Region that contains the repository for which to create a lifecycle policy.
+
+- In the navigation pane, choose Repositories.
+
+- On the Repositories page, on the Private tab, select a repository to view the repository image list.
+
+- On the repository image list view, in the left navigation pane, choose Lifecycle Policy.
+
+* Note:
+If you don't see the Lifecycle Policy option in the navigation pane, ensure that you are in the repository image list view.
+
+- On the repository lifecycle policy page, choose Create rule.
+
+- Enter the following details for your lifecycle policy rule.
+
+- For Rule priority, type a number for the rule priority.
+
+- For Rule description, type a description for the lifecycle policy rule.
+
+- For Image status, choose Tagged, Untagged, or Any.
+
+* If you specified Tagged for Image status, then for Tag prefixes, you can optionally specify a list of image tags on which to take action with your lifecycle policy. If you specified Untagged, this field must be empty.
+
+- For Match criteria, choose values for Since image pushed or Image count more than (if applicable).
+
+- Choose Save.
+
 ## Part 3 - Configuring AWS CLI to Work with AWS ECR
 
 - connect to your instance with SSH.
