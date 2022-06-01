@@ -820,7 +820,10 @@ ansible-galaxy init react
 - Add the roles_path = /home/ec2-user/ansible/roles to the ansible.cfg.
 
 - Go to the /home/ec2-user/ansible/roles/docker/tasks/main.yml and copy the following.
+<<<<<<< HEAD
 sudo pip3 install --upgrade requests
+=======
+>>>>>>> 4707fda649deb1e7747f84db978d40ed37adb617
 
 ```yaml
     - name: update all pkgs
@@ -1005,6 +1008,7 @@ container_name: cla_react
 image_name: clacw/react
 ```
 
+<<<<<<< HEAD
 - Copy /home/ec2-user/ansible/ansible-project/client folder and /home/ec2-user/ansible/ansible-project/react/Dockerfile to /home/ec2-user/ansible/roles/react/files.
 
     - name: create build directory
@@ -1044,6 +1048,8 @@ image_name: clacw/react
         ports:
         - "3000:3000"
 
+=======
+>>>>>>> 4707fda649deb1e7747f84db978d40ed37adb617
 
 - Go to the /home/ec2-user/ansible/ and create a playbook.
 
