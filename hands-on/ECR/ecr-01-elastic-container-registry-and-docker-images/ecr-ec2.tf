@@ -69,7 +69,7 @@ resource "aws_iam_instance_profile" "ec2_profile" {
 resource "aws_instance" "ecr-instance" {
   ami                  = "ami-02e136e904f3da870"
   instance_type        = "t2.micro"
-  key_name        = "tyler-team" # you need to change this line
+  key_name        = "davidskey" # you need to change this line
   security_groups = ["ec2-sec-gr"]
   tags = {
     Name = "ec2-ecr-instance"
