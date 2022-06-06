@@ -2,14 +2,11 @@
 
 ## Description
 
-This project aims to create a Jenkins pipeline to deploy web-page written Nodejs and React Frameworks on AWS Cloud Infrastructure using Ansible. Building infrastructure process is managing with control node utilizing Ansible. This infrastructure has 1 jenkins server as ansible control node and 3 EC2's as worker node. These EC2's will be launched on AWS console. Web-page has 3 main components which are postgresql, nodejs, and react. Each component is serving in Docker container on EC2s dedicated for them. Postgresql is serving as Database of web-page. Nodejs controls backend part of web-side and react controls frontend side of web-page. The code was written by Clarusway's Developers and architecture will be created by Clarusway's AWS & DevOps Team.
+This project aims to create a Jenkins pipeline to deploy web-page written Nodejs and React Frameworks on AWS Cloud Infrastructure using Ansible. Building infrastructure process is managing with control node utilizing Ansible. This infrastructure has 1 jenkins server (`Amazon Linux 2 AMI`) as ansible control node and 3 EC2's as worker node (`Red Hat Enterprise Linux 8 with High Availability`). These EC2's will be launched on AWS console. Web-page has 3 main components which are postgresql, nodejs, and react. Each component is serving in Docker container on EC2s dedicated for them. Postgresql is serving as Database of web-page. Nodejs controls backend part of web-side and react controls frontend side of web-page. The code was written by Clarusway's Developers and architecture will be created by Clarusway's AWS & DevOps Team.
 
 ## Problem Statement
 
-
-//////////////////////
 ![Project_007](ansible.png)
-/////////////////
 
 - Clarusway has recently ended up a project that aims to serve as web page. You and your colleagues are assigned to work on this project. Clarusway Developer team has done with code and DevOps team is going to deploy the app in production environment using ansible.
 
@@ -19,7 +16,7 @@ This project aims to create a Jenkins pipeline to deploy web-page written Nodejs
 
 - The Web Application should be accessible via web browser from anywhere on port 3000.
 
-- EC2's and their security groups should be created on AWS console.
+- EC2's and their security groups should be created on AWS console with Terraform.
 
 - The rest of the process has to be controlled with control node which is connected SSH port.
 
@@ -33,21 +30,23 @@ This project aims to create a Jenkins pipeline to deploy web-page written Nodejs
 
 In the architecture, you can configure your architecture with these conditions,
 
+  - Create a new `private` repository for the project on GitHub.
+
   - All process has to be controlled into the `jenkins server` as control node.
 
-  - Dynamic inventory has to be used for inventory file.
+  - Dynamic inventory (`inventory_aws_ec2.yml`) has to be used for inventory file.
 
-  - Ansible config file has to be placed in jenkins server.
+  - Ansible config file (`ansible.cfg`) has to be placed in jenkins server.
   
   - Docker should be installed in all worker nodes using ansible.
 
   - Docker images should be build in jenkins server and pushed to the AWS ECR.
 
-  - `todo-app-pern` file should be pulled from Github Repo at the beginning. Then these files should be copy to related folders.
+  - `student_files` file should be pulled from Github Repo at the beginning. Then these files should be copy to related folders.
 
 - For PostgreSQL worker node
 
-    - Docker image should be created for PostgreSQL container with dockerfile-postgresql and init.sql file should be placed under necessary folder.
+    - Docker image should be created for PostgreSQL container with `dockerfile-postgresql` and `init.sql` file should be placed under necessary folder.
 
     - Docker images should be build in jenkins server from `dockerfile-postgresql` and pushed to the AWS ECR.
 
@@ -59,7 +58,7 @@ In the architecture, you can configure your architecture with these conditions,
 
   - For Nodejs worker node
 
-    - Please make sure to correct or create `.env` file under `server` folder based on PostgreSQL environmental variables. To automize taking private ip of postgresql instance you can use linux envsubst command with env-template.
+    - Please make sure to correct or create `.env` file under `server` folder based on PostgreSQL environmental variables. To automize taking private ip of postgresql instance you can use linux `envsubst` command with env-template.
     
     - Docker image should be created for nodejs container with dockerfile-nodejs and `server` files should be placed under necessary folder. This file will use for docker image. You don't need any extra file for creating Nodejs image.
 
@@ -71,7 +70,7 @@ In the architecture, you can configure your architecture with these conditions,
 
   - For React worker node
 
-    - Please make sure to correct `.env` file under `client` folder based on Nodejs environmental variables. To automize taking public ip of nodejs instance, you can use linux envsubst command with env-template.
+    - Please make sure to correct `.env` file under `client` folder based on Nodejs environmental variables. To automize taking public ip of nodejs instance, you can use linux `envsubst` command with env-template.
     
     - Docker image should be created for react container with dockerfile-react and `client` files should be placed under necessary folder. This file will be used for docker image. You don't need any extra file for creating react image.
 
@@ -88,7 +87,7 @@ In the architecture, you can configure your architecture with these conditions,
 
     - Install AWS CLI `Version 2` on worker node instances to use `aws ecr` commands.
 
-- To create a Jenkins Pipelines, you need to launch a Jenkins Server with security group allowing SSH (port 22) and HTTP (ports 80, 8080) connections. For this purpose, you can use pre-configured [*Terraform configuration file for Jenkins Server enabled with Git, Docker, Terraform, Ansible and also configured to work with AWS ECR using IAM role*](./jenkins-server/install-jenkins.tf).
+- To create a Jenkins Pipeline, you need to launch a Jenkins Server with security group allowing SSH (port 22) and HTTP (ports 80, 8080) connections. For this purpose, you can use pre-configured [*Terraform configuration file for Jenkins Server enabled with Git, Docker, Terraform, Ansible and also configured to work with AWS ECR using IAM role*](./jenkins_server/install-jenkins.tf).
 
 - Create a Jenkins Pipeline with following configuration;
 
@@ -100,27 +99,33 @@ In the architecture, you can configure your architecture with these conditions,
 
   - Deploy the application on AWS EC2's with ansible.
 
+  - Make a failure stage and ensure to destroy infrastructure, ECR repo and docker images when the pipeline failed.
+
 ## Project Skeleton
 
-```text
-208:clarusway_ansible_proj (folder)
+```bash
+208:clarusway_jenkins_project (folder)
 |
 |----Readme.md                  # Given to the students (Definition of the project)
-|----main.tf                    # To be delivered by students (Terraform configuration file)
-|----dockerfile-postgresql      # To be delivered by students
-|----dockerfile-nodejs          # To be delivered by students
-|----dockerfile-react           # To be delivered by students
+|----dockerfile-postgresql      # Given to the students
+|----dockerfile-nodejs          # Given to the students
+|----dockerfile-react           # Given to the students
+|----main.tf                    # To be delivered by students (for managed nodes)
 |----Jenkinsfile                # To be delivered by students
 |----Ansible-Playbook           # To be delivered by students
-|----todo-app-perm (folder)     # Given to the students (Nodejs and React files)
+|----student_files (folder)     # Given to the students (Postgresql, Nodejs and React files)
 |       1.server (folder) ---> Nodejs folders and files
 |       2.client (folder) ---> React folders and files
 |       3.database (folder)--> init.sql file 
 |----ansible.cfg                # Given to the students
 |----inventory_aws_ec2.yml      # Given to the students
 |----install-jenkins.tf         # Given to the students (Terraform template for Jenkins Server)
-|----install-jenkins.sh         # Given to the students (Terraform template for Jenkins Server)
+|----variables.tf               # Given to the students (Terraform template for Jenkins Server)
+|----jenkins.sh                 # Given to the students (Terraform template for Jenkins Server)
+|----node-env-template          # Given to the students (env template to take prostgresql node private ip)
+|----react-env-template         # Given to the students (env template to take nodejs node private ip)
 
+```
 
 ## Expected Outcome
 
@@ -130,9 +135,15 @@ In the architecture, you can configure your architecture with these conditions,
 
 - Jenkins Pipeline Configuration
 
-- Docker Swarm Deployment
+- Create infrastructure with Terraform
 
-- Web App and MySQL Database Configuration in Docker Swarm
+- Deploy the application with Ansible
+
+- Ansible playbook preparation
+
+- Docker image creation for postgresql, nodejs and react containers
+
+- Docker container launching using created image with ansible playbook
 
 - Bash scripting
 
@@ -146,50 +157,38 @@ In the architecture, you can configure your architecture with these conditions,
 
 - AWS EC2 Security Group Configuration
 
-- AWS Cloudformation Service
-
-- AWS Cloudformation Template Design
-
 - Git & Github for Version Control System
 
 ### At the end of the project, students will be able to;
 
-- demonstrate how to configure Jenkins pipeline to deploy app on Docker Swarm together with Cloudformation Template.
+- demonstrate how to configure Jenkins pipeline to create infrstructure with terraform.
 
-- demonstrate how to configure Dockerfile and docker-compose files.
+- demonstrate how to configure Jenkins pipeline to deploy app with ansible.
 
-- set up a Docker Swarm cluster to work with AWS ECR using Cloudformation/Terraform.
+- demonstrate how to configure Dockerfile.
 
-- deploy an application stack on Docker Swarm.
+- set up 3 containers to work with AWS ECR for pulling docker images.
+
+- deploy an application with ansible.
 
 - create and configure AWS ECR from the AWS CLI.
 
 - use Docker commands effectively to tag, push, and pull images to/from ECR.
 
-- demonstrate bash scripting skills using `user data` section in Cloudformation to install and setup environment for Docker Swarm on EC2 Instances.
+- demonstrate bash scripting skills using `user data` section in terraform to install and setup environment for ansible manged nodes.
 
-- demonstrate their configuration skills of AWS EC2, Launch Templates, IAM Policy, Role, Instance Profile, and Security Group.
-
-- configure Cloudformation template to use AWS Resources.
-
-- show how to launch AWS Cloudformation Templates from AWS CLI.
+- demonstrate their configuration skills of AWS EC2, IAM Policy, Role, Instance Profile, and Security Group.
 
 - apply git commands (push, pull, commit, add etc.) and Github as Version Control System.
 
 ## Resources
 
-- [AWS Cloudformation User Guide](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/Welcome.html)
+- [Ansible Documentation Framework](https://docs.ansible.com/ansible/2.5/user_guide/index.html)
 
 - [AWS CLI Command Reference](https://docs.aws.amazon.com/cli/latest/index.html)
 
-- [AWS ECR Credential Helper](https://github.com/awslabs/amazon-ecr-credential-helper)
-
 - [Authenticating Amazon ECR Repositories for Docker CLI with Credential Helper](https://aws.amazon.com/blogs/compute/authenticating-amazon-ecr-repositories-for-docker-cli-with-credential-helper/)
 
-- [Docker Compose File Reference](https://docs.docker.com/compose/compose-file/)
-
 - [Docker Reference Page](https://docs.docker.com/reference/)
-
-- [EC2 Instance Connect](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Connect-using-EC2-Instance-Connect.html)
 
 - [Jenkins Handbook](https://www.jenkins.io/doc/book/)
