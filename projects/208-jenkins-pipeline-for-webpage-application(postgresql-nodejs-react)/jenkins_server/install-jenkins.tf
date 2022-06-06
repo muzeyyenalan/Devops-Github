@@ -1,6 +1,14 @@
+terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 4.0"
+    }
+  }
+}
+
 provider "aws" {
-  region = "us-east-2"
-  profile = "cw-training"
+  region = "us-east-1"
 }
 
 resource "aws_iam_role" "aws_access" {
@@ -23,30 +31,27 @@ resource "aws_iam_role" "aws_access" {
 }
 
 resource "aws_iam_instance_profile" "ec2-profile" {
-  name = "jenkins-profile"
+  name = "jenkins-project-profile"
   role = aws_iam_role.aws_access.name
 }
 
 resource "aws_instance" "tf-jenkins-server" {
-//  ami           = data.aws_ami.tf-ami.id
-  ami = "ami-0661cd3308ec33aaa"
-  instance_type = "t3a.medium"
-//  key_name      = "oliver"
-  key_name      = "oliver-ohio"
-  //  Write your pem file name
-  security_groups = ["jenkins-server-sec-gr"]
+  ami = var.myami
+  instance_type = var.instancetype
+  key_name      = var.mykey
+  vpc_security_group_ids = [aws_security_group.tf-jenkins-sec-gr.id]
   iam_instance_profile = aws_iam_instance_profile.ec2-profile.name
   tags = {
-    Name = "Jenkins_Server"
+    Name = var.tag
   }
-  user_data = file("install-jenkins.sh")
+  user_data = file("jenkins.sh")
 
 }
 
 resource "aws_security_group" "tf-jenkins-sec-gr" {
-  name = "jenkins-server-sec-gr"
+  name = var.jenkins-sg
   tags = {
-    Name = "jenkins-server-sec-group"
+    Name = var.jenkins-sg
   }
   ingress {
     from_port   = 80
@@ -76,40 +81,6 @@ resource "aws_security_group" "tf-jenkins-sec-gr" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 }
-
-//resource "null_resource" "jenkins-config" {
-//  connection {
-//    host = aws_instance.tf-jenkins-server.public_ip
-//    type = "ssh"
-//    user = "ec2-user"
-////    private_key = file("~/oliver.pem")
-//    private_key = file("~/oliver-ohio.pem")
-//  }
-//
-//
-////  provisioner "file" {
-////    source = "~/oliver.pem"
-////    destination = "/home/ec2-user/oliver.pem"
-////  }
-//
-//  provisioner "file" {
-//    source = "~/oliver-ohio.pem"
-//    destination = "/home/ec2-user/oliver-ohio.pem"
-//  }
-//
-//
-////  provisioner "remote-exec" {
-////    inline = [
-////      "chmod 400 oliver.pem"
-////    ]
-////  }
-//
-//  provisioner "remote-exec" {
-//    inline = [
-//     "chmod 400 oliver-ohio.pem"
-//    ]
-//  }
-//}
 
 output "jenkins-server" {
   value = "http://${aws_instance.tf-jenkins-server.public_dns}:8080"

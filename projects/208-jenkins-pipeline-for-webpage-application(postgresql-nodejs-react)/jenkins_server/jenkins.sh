@@ -1,15 +1,15 @@
 #! /bin/bash
-sudo yum update -y
+yum update -y
 hostnamectl set-hostname jenkins-server
 yum install git -y
-sudo amazon-linux-extras install java-openjdk11 -y
-sudo wget -O /etc/yum.repos.d/jenkins.repo https://pkg.jenkins.io/redhat/jenkins.repo
-sudo rpm --import https://pkg.jenkins.io/redhat/jenkins.io.key
-sudo amazon-linux-extras install epel
-sudo yum install jenkins -y
-sudo systemctl start jenkins
-sudo systemctl enable jenkins
-sudo systemctl status jenkins
+wget -O /etc/yum.repos.d/jenkins.repo https://pkg.jenkins.io/redhat-stable/jenkins.repo
+rpm --import https://pkg.jenkins.io/redhat-stable/jenkins.io.key
+yum upgrade
+amazon-linux-extras install java-openjdk11 -y
+yum install jenkins -y
+systemctl enable jenkins
+systemctl start jenkins
+systemctl status jenkins
 amazon-linux-extras install docker -y
 systemctl start docker
 systemctl enable docker
@@ -29,7 +29,7 @@ curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip
 unzip awscliv2.zip
 ./aws/install
 amazon-linux-extras install ansible2 -y
-sudo yum install python-boto3 -y
-wget https://releases.hashicorp.com/terraform/1.1.7/terraform_1.1.7_linux_amd64.zip
-unzip terraform_1.1.7_linux_amd64.zip
-mv terraform /usr/bin
+yum install python-boto3 -y
+yum install -y yum-utils
+yum-config-manager --add-repo https://rpm.releases.hashicorp.com/AmazonLinux/hashicorp.repo
+yum -y install terraform
