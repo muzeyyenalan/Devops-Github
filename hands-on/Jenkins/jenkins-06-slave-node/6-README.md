@@ -10,6 +10,8 @@ At the end of the this hands-on training, students will be able to;
 
 - run jobs on slave node.
 
+- create job DSL
+
 ## Outline
 
 - Part 1 - Slave Node Configuration
@@ -18,6 +20,7 @@ At the end of the this hands-on training, students will be able to;
 
 - Part 3 - Pipeline Project on Slave Node
 
+- Part 4 - Jenkins Job DSL
 
 ## Part 1 - Slave Node Configuration
 
@@ -189,3 +192,58 @@ pipeline {
 - Explain the built results.
 
 - Explain the pipeline script.
+
+
+## Part 4 - Jenkins Job DSL
+
+- Install `Job DSL` plugin
+
+- Go to the dashboard and create a `Seed Job` in form of `Free Style Project`. To do so;
+
+- Click on `New Item`
+
+  - Enter name as `Maven-Seed-Job`
+
+  - Select `Freestyle project`
+
+  - Click `OK`
+
+- Inside `Source Code Management` tab
+
+  - Select `Git`
+  
+  - Select the path to download the DSL file, so for `Repository URL`, enter `https://github.com/JBCodeWorld/jenkins-project-settings.git`
+
+- Inside `Build Options` tab
+
+  - From `Add build step`, select the `Process Job DSLs`.
+
+  - for `Look on Filesystem` `DSL Scripts`, enter `MavenProjectDSL.groovy`
+  
+- Now click the  `Build Now` option, it will fail. Check the console log for the fail reason.
+
+- Go to `Manage Jenkins` ,  select the `In-process Script Approval`, `approve` the script.
+  
+- Go to the job and click the  `Build Now` again.
+
+- Observe that DSL Job created.
+
+- Go to the `First-Maven-Project-Via-DSL` job.
+
+- Select `Configure`, at `Build` section set `Maven Version` to a defined/valid one.
+
+- `Save` and click the `Build Now` option.
+
+- Check the console log
+
+- Note: git configuration needs to be set for Jenkins user
+    
+    - Switch to "jenkins" user and configure git.
+
+```bash
+sudo su - jenkins
+git config --global user.email "you@example.com"
+git config --global user.name "Your Name"
+```
+
+- Back to the job tab and show the `Last Successful Artifacts : single-module-project.jar`
