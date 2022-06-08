@@ -121,6 +121,8 @@ cd /opt/tomcat/conf
 
 - Note : Don't forget to remove the xml comment bloks `<!--` and `-->`. Delete these enclosing lines.
 
+- To configure Tomcat server we need to modify the content of the context.xml. Be careful there are two of this file. We have to modify both of them.
+
 - Go to the `/opt/tomcat/webapps/host-manager/META-INF/` and edit file `context.xml`. Actually commenting out the tagged `CookieProcessor` and `Valve` parts.
 
 ```bash
