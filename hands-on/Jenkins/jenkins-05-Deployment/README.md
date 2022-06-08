@@ -71,7 +71,7 @@ At the end of the this hands-on training, students will be able to;
 
 - For Description : `This Job will deploy a Java-Tomcat-Sample to the staging environment.`
 
-- At `General Tab`, select `Strategy` and for `Days to keep builds` enter `5` and `Max # of builds to keep` enter `3`.
+- At `General Tab`, select Discard old builds, `Strategy` is `Log Rotation`, and for `Days to keep builds` enter `5` and `Max # of builds to keep` enter `3`.
 
 - At `Build Environments` section, select `Delete workspace before build starts` and `Add timestamps to the Console Output` options.
 
