@@ -208,7 +208,7 @@ cd /etc/systemd/system
 - In able to declare a service "unit file" must be created. Create a `tomcat.service` file.
 
 ```bash
-sudo vi tomcat.service
+sudo nano tomcat.service
 ```
 
 - Copy and paste this code in "tomcat.service" file.

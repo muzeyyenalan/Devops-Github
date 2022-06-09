@@ -33,7 +33,7 @@ At the end of the this hands-on training, students will be able to;
 ```bash
 sudo yum update -y
 sudo amazon-linux-extras install java-openjdk11 -y
-sudo yum install java-devel 
+#sudo yum install java-devel 
 ```
 
 - Install Git
@@ -90,7 +90,7 @@ ifconfig
 - Go to the Jenkins Master server and test ssh connection.
 
 ```bash
-ssh root@<slave-node-ip-number>
+ssh root@172.31.82.102
 exit
 ```
 
@@ -101,7 +101,7 @@ exit
 ```bash
 mkdir bin
 cd bin
-wget http://<jenkins_master_ip>:8080/jnlpJars/slave.jar
+wget http://44.203.203.26:8080/jnlpJars/slave.jar
 ```
 
 - Go to Jenkins dashboard, click on "Manage Jenkins" from left hand menu.
