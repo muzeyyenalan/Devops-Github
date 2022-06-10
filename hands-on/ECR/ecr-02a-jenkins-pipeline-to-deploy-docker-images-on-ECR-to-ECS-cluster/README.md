@@ -187,18 +187,6 @@ pipeline {
         APP_REPO_NAME= "clarusway/to-do-app"
     }
     stages {
-        stage("Run app on Docker"){
-            agent{
-                docker{
-                    image 'node:12-alpine'
-                }
-            }
-            steps{
-                withEnv(["HOME=${env.WORKSPACE}"]) {
-                    sh 'yarn install --production'
-                }   
-            }
-        }
         stage('Build Docker Image') {
             steps {
                 sh 'docker build --force-rm -t "$ECR_REGISTRY/$APP_REPO_NAME:latest" .'
