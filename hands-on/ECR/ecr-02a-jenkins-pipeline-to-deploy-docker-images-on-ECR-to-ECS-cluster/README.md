@@ -44,8 +44,6 @@ At the end of the this hands-on training, students will be able to;
 
 - Launch a pre-configured `Jenkins Server` from the terraform file running on Amazon Linux 2, allowing SSH (port 22) and HTTP (ports 80, 8080) connections.  
 
-- Clarusway Jenkins Server is configured with admin user `admin` and password `Clarusway1234`.
-
 - Open your Jenkins dashboard and navigate to `Manage Jenkins` >> `Manage Plugins` >> `Available` tab
 
 - Search and select `GitHub Integration, Pipeline: GitHub, Docker, Docker Pipeline` plugins, then click to `Install without restart`. Note: No need to install the other `Git plugin` which is already installed can be seen under `Installed` tab.
