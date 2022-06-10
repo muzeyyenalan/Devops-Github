@@ -216,17 +216,13 @@ git add .
 git commit -m 'added Jenkinsfile'
 git push
 ```
-- Explain, why did we get `Error: Cannot perform an interactive login from a non TTY deviceAdd` error and add the following line into ```environment``` section in the Jenkins file.
+- Explain, why we got `Error: Cannot perform an interactive login from a non TTY deviceAdd` error and add the following line into ```environment``` section in the Jenkins file.
 
 ```text
 PATH="/usr/local/bin/:${env.PATH}"
 ```
 
-### Step-3: Jenkins Build Process
-
-- Go to the Jenkins project page and click `Build Now`.The job has to be executed manually one time in order for the push trigger and the git repo to be registered.
-
-### Step-4: Make change to trigger Jenkins
+### Step-3: Make change to trigger Jenkins
 
 - Now, to trigger an automated build on Jenkins Server, we need to change code in the repo. For example, in the `src/static/js/app.js` file, update line 56 of `<p className="text-center">No items yet! Add one above!</p>` with following new text.
 
@@ -260,7 +256,7 @@ docker container stop todo
 docker container rm todo
 ```
 
-### Step 5 Add Deploy stage 
+### Step 4 Add Deploy stage 
 
 - Go to the Jenkins instance (todo-app-node-project/ directory)to create `Jenkinsfile`
 ```bash
@@ -337,7 +333,7 @@ git commit -m 'added Jenkinsfile'
 git push
 ```
 
-### Step 6 Deploy to the ECS cluster
+### Step 5 Deploy to the ECS cluster
 
 - Createa ECS cluster with a unique name with the following command.
 
@@ -451,7 +447,7 @@ git push
 
 - Check the <ecs task Public IP:3000> page.
 
-### Step 7 Make change to trigger again 
+### Step 6 Make change to trigger again 
 
 - Change the script to make trigger.
 
