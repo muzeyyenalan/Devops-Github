@@ -90,8 +90,7 @@ ifconfig
 - Go to the Jenkins Master server and test ssh connection.
 
 ```bash
-ssh root@172.31.82.102
-exit
+ssh root@172.31.89.224<slave-private-ip>
 ```
 
 - **The second one is to copy agent file from Jenkins server to slave node.**
@@ -101,7 +100,7 @@ exit
 ```bash
 mkdir bin
 cd bin
-wget http://44.203.203.26:8080/jnlpJars/slave.jar
+wget http://<master ip >:8080/jnlpJars/slave.jar
 ```
 
 - Go to Jenkins dashboard, click on "Manage Jenkins" from left hand menu.
