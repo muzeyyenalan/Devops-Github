@@ -381,7 +381,7 @@ aws ecs create-cluster --cluster-name to-do-app
 	],
 	"cpu": "256",
 	"memory": "512",
-        "executionRoleArn": "<arn:aws:iam::DON'T FORGET TO CHANGE ME>:role/ecsTaskExecutionRole"
+        "executionRoleArn": "arn:aws:iam::<aws-account-id>:role/ecsTaskExecutionRole"
 }
 ```
 
@@ -411,7 +411,7 @@ aws ecs create-service --cluster to-do-app --service-name to-do-app-service --ta
 pipeline {
     agent any
     environment {
-        ECR_REGISTRY = "046402772087.dkr.ecr.us-east-1.amazonaws.com"
+        ECR_REGISTRY = "<aws-account-id>.dkr.ecr.us-east-1.amazonaws.com"
         APP_REPO_NAME= "clarusway/to-do-app"
     }
     stages {
