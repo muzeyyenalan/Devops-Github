@@ -1,0 +1,10 @@
+groups:
+- name: down-node
+  rules:
+  - alert: InstanceIsDown
+    expr: up == 0
+    for: 60s
+    labels:
+      severity: critical
+    annotations:
+      description: "{{ $labels.instance_name }} instance is down"

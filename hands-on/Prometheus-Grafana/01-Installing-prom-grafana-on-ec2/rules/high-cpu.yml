@@ -1,0 +1,11 @@
+groups:
+- name: high-cpu-load
+  rules:
+  - alert: InstanceHighCpuLoad
+    expr: 100 - (avg by(instance_name) (rate(node_cpu{mode="idle"}[30m])) * 100) > 90
+    for: 1m
+    labels:
+      severity: warning
+    annotations:
+      summary: Host high CPU load (instance {{ $labels.instance_name }})
+      description: "CPU load is > 90%\n  VALUE = {{ $value }}\n for 1 minutes"
