@@ -1,5 +1,5 @@
 variable "mykey" {
-  default = "clarus"
+  default = "firstkey"
 }
 variable "myami" {
   default = "ami-0022f774911c1d690"

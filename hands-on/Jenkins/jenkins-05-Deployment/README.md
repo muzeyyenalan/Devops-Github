@@ -84,7 +84,7 @@ At the end of the this hands-on training, students will be able to;
 
 - For `Add post-build action`, select `Deploy war/ear to a container`
   - for `WAR/EAR files`, fill in `**/*.war`.
-  - for `Context path`, filll in `/`.
+  - for `Context path`, fill in `/`.
   - for `Containers`, select `Tomcat 9.x Remote`.
   - Add credentials
     - Add -> Jenkins
