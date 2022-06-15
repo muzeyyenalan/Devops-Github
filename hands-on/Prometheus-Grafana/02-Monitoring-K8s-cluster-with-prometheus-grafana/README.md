@@ -52,9 +52,10 @@ rules:
   - services
   - endpoints
   - pods
+  - configmaps
   verbs: ["get", "list", "watch"]
 - apiGroups:
-  - extensions
+  - networking.k8s.io
   resources:
   - ingresses
   verbs: ["get", "list", "watch"]
@@ -95,7 +96,7 @@ metadata:
     name: prometheus-server-conf
   namespace: prometheus
 data:
-  prometheus.rules: |-
+  rule.yml: |-
     groups:
     - name: Sample Alert
       rules:
@@ -111,7 +112,7 @@ data:
       scrape_interval: 5s
       evaluation_interval: 5s
     rule_files:
-      - /etc/prometheus/prometheus.rules
+      - /etc/prometheus/rule.yml
     alerting:
       alertmanagers:
       - scheme: http
