@@ -33,7 +33,11 @@ At the end of the this hands-on training, students will be able to;
 ```bash
 sudo yum update -y
 sudo amazon-linux-extras install java-openjdk11 -y
+<<<<<<< HEAD
 #sudo yum install java-devel 
+=======
+```
+>>>>>>> ee4dbef1369e4cafa6f1259fcdded8306429fb18
 
 - Install Git
   
