@@ -1698,6 +1698,9 @@ output worker-2-ip {
 git add .
 git commit -m 'added dev-k8s-terraform  for kubernetes infrastructure'
 git push --set-upstream origin feature/msp-15
+git checkout dev
+git merge feature/msp-15
+git push origin dev
 ```
 
 ## MSP 16 - Create a QA Automation Environment with Kubernetes - Part-2
