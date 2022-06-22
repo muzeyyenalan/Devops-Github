@@ -46,6 +46,16 @@ MSP-6:
     |--> egd = entropy gathering deamon
     |--> system property used for not blocking JVM's running...
 
+* Random and Urandom are both devices in /dev in Linux to generate random data, but have a few differences . 
+These devices are like special files that use some source of entropy to generate random data. 
+A kernel gathers information from external sources (i.e. some unpredictable sources like interrupts , keyboard events , mouse movements) to generate input to the entropy pool. 
+This input is nothing but some bits with extremely strong random properties. 
+The entropy pool acts as source of input for randomness for both the devices mentioned above.
+Read from /dev/random device is blocked if the entropy pool runs low on the bits until there is sufficient entropy gathered. 
+While it’s not the same case with dev/urandom device. urandom reads from the entropy pool till sufficient entropy is available. 
+Once the entropy pool is exhausted ,it uses SHA cryptographic hash algorithm to generate strong random numbers.
+If we want more random numbers to be generated in short span of time, /dev/urandom is always a better option. 
+Since /dev/random gets blocked and affects the performance of the application due to low entropy, it should be used only when it is strongly needed i.e. in cases of long-lived GPG/SSL/SSH keys.
 
 MSP-7:
 ------
