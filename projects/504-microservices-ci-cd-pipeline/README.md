@@ -1705,6 +1705,14 @@ git push origin dev
 
 ## MSP 16 - Create a QA Automation Environment with Kubernetes - Part-2
 
+- Create `feature/msp-16` branch from `dev`.
+
+```bash
+git checkout dev
+git branch feature/msp-16
+git checkout feature/msp-16
+```
+
 - Create a Jenkins Job and name it as `test-creating-qa-automation-infrastructure` to test `bash` scripts creating QA Automation Infrastructure for `dev` manually.
   * Select `Freestyle project` and click `OK`
   * Select github project and write the url to your repository's page into `Project url` (https://github.com/[your-github-account]/petclinic-microservices)
@@ -1769,7 +1777,7 @@ ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i ${WORKSPACE}/
 ```bash
 git add .
 git commit -m 'added ansible static inventory host.ini for testing'
-git push
+git push --set-upstream origin feature/msp-16
 ```
 
 - Configure `test-creating-qa-automation-infrastructure` job and replace the existing script with the one below in order to test ansible by pinging static hosts.
