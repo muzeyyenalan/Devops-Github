@@ -1687,8 +1687,6 @@ output worker-2-ip {
 }
 ```
 
-> Note: Tag the subnet of us-east-1a with "kubernetes.io/cluster/mattsCluster" = "owned" for ingress.
-
 - Commit the change, then push the cloudformation template to the remote repo.
 
 ```bash
