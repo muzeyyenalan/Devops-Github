@@ -1611,7 +1611,6 @@ resource "aws_security_group" "matt-kube-master-sg" {
   }
   tags = {
     Name = "kube-master-secgroup"
-    # "kubernetes.io/cluster/mattsCluster" = "owned"  # This part is commented out for not letting master node to get into the target instances of the ingress load balancer
   }
 }
 
@@ -1640,7 +1639,6 @@ resource "aws_instance" "worker-1" {
     vpc_security_group_ids = [aws_security_group.matt-kube-worker-sg.id, aws_security_group.matt-kube-mutual-sg.id]
     key_name = "mattkey"
     subnet_id = "subnet-c41ba589"  # select own subnet_id of us-east-1a
-    # subnet_id = "subnet-077c9758"
     availability_zone = "us-east-1a"
     tags = {
         Name = "worker-1"
@@ -1659,7 +1657,6 @@ resource "aws_instance" "worker-2" {
     vpc_security_group_ids = [aws_security_group.matt-kube-worker-sg.id, aws_security_group.matt-kube-mutual-sg.id]
     key_name = "mattkey"
     subnet_id = "subnet-c41ba589"  # select own subnet_id of us-east-1a
-    # subnet_id = "subnet-3ccd235a"
     availability_zone = "us-east-1a"
     tags = {
         Name = "worker-2"
