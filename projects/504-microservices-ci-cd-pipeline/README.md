@@ -2449,10 +2449,10 @@ stable-petclinicapp/petclinic_chart     1.1.1           0.1.0           A Helm c
 ``` bash
 git add .
 git commit -m 'added Configuration YAML Files for Kubernetes Deployment'
-git push --set-upstream origin feature/msp-24
-git checkout release
-git merge feature/msp-24
-git push origin release
+git push --set-upstream origin feature/msp-17
+git checkout dev
+git merge feature/msp-17
+git push origin dev
 ```
 
 ## MSP 18 - Prepare a QA Automation Pipeline for Nightly Builds
