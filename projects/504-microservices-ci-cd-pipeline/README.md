@@ -1706,6 +1706,7 @@ git push origin dev
 git checkout dev
 git branch feature/msp-16
 git checkout feature/msp-16
+git push --set-upstream origin feature/msp-16
 ```
 
 - Create a Jenkins Job and name it as `test-creating-qa-automation-infrastructure` to test `bash` scripts creating QA Automation Infrastructure for `dev` manually.
@@ -2448,10 +2449,10 @@ stable-petclinicapp/petclinic_chart     1.1.1           0.1.0           A Helm c
 ``` bash
 git add .
 git commit -m 'added Configuration YAML Files for Kubernetes Deployment'
-git push --set-upstream origin feature/msp-24
-git checkout release
-git merge feature/msp-24
-git push origin release
+git push --set-upstream origin feature/msp-17
+git checkout dev
+git merge feature/msp-17
+git push origin dev
 ```
 
 ## MSP 18 - Prepare a QA Automation Pipeline for Nightly Builds
