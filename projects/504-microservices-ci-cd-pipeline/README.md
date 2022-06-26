@@ -3093,7 +3093,7 @@ docker push "${IMAGE_TAG_PROMETHEUS_SERVICE}"
       kubectl create secret generic regcred -n petclinic-qa \
         --from-file=.dockerconfigjson=/home/ubuntu/.docker/config.json \
         --type=kubernetes.io/dockerconfigjson
-      AWS_REGION=$AWS_REGION helm repo add stable-petclinic s3://petclinic-helm-charts/stable/myapp/
+      AWS_REGION=$AWS_REGION helm repo add stable-petclinic s3://petclinic-helm-charts-<put-your-name>/stable/myapp/
       AWS_REGION=$AWS_REGION helm repo update
       AWS_REGION=$AWS_REGION helm upgrade --install \
         petclinic-app-release stable-petclinic/petclinic_chart --version ${BUILD_NUMBER} \
@@ -3106,7 +3106,7 @@ docker push "${IMAGE_TAG_PROMETHEUS_SERVICE}"
 echo 'Deploying App on Kubernetes'
 sh "envsubst < k8s/petclinic_chart/values-template.yaml > k8s/petclinic_chart/values.yaml"
 sh "sed -i s/HELM_VERSION/${BUILD_NUMBER}/ k8s/petclinic_chart/Chartyaml"
-sh "helm repo add stable-petclinic s3://petclinic-helm-charts/stablemyapp/"
+sh "helm repo add stable-petclinic s3://petclinic-helm-charts-<put-your-name>/stablemyapp/"
 sh "helm package k8s/petclinic_chart"
 sh "helm s3 push petclinic_chart-${BUILD_NUMBER}.tgz stable-petclinic"
 sh "envsubst < ansible/playbooks/qa-petclinic-deploy-template >ansible/playbooks/qa-petclinic-deploy.yaml"
@@ -3120,7 +3120,7 @@ sh "ansible-playbook -i ./ansible/inventory/qa_stack_dynamic_inventory_aws_ec2.y
 echo 'Deploying App on Kubernetes'
 envsubst < k8s/petclinic_chart/values-template.yaml > k8s/petclinic_chart/values.yaml
 sed -i s/HELM_VERSION/${BUILD_NUMBER}/ k8s/petclinic_chart/Chart.yaml
-AWS_REGION=$AWS_REGION helm repo add stable-petclinic s3://petclinic-helm-charts/stablemyapp/ || echo "repository name already exists"
+AWS_REGION=$AWS_REGION helm repo add stable-petclinic s3://petclinic-helm-charts-<put-your-name>/stablemyapp/ || echo "repository name already exists"
 AWS_REGION=$AWS_REGION helm repo update
 helm package k8s/petclinic_chart
 AWS_REGION=$AWS_REGION helm s3 push petclinic_chart-${BUILD_NUMBER}.tgz stable-petclinic
