@@ -2633,6 +2633,14 @@ PATH="$PATH:/usr/local/bin"
 ansible-playbook --connection=local --inventory 127.0.0.1, --extra-vars "workspace=${WORKSPACE}" ./ansible/playbooks/pb_run_dummy_selenium_job.yaml
 ```
 
+- Run the following command to test the `dummy_selenium_test_headless.py` file.
+
+```bash
+cd petclinic-microservices-with-db/
+ansible-playbook --connection=local --inventory 127.0.0.1, --extra-vars "workspace=$(pwd)" ./ansible/playbooks/pb_run_dummy_selenium_job.yaml
+```
+- Next, you can change something in the `dummy_selenium_test_headless.py` (I'm Feeling Lucks) and run the command again. And check the test ``passed`` or ``failed``. 
+
 - Commit the change, then push the scripts for dummy selenium job to the remote repo.
 
 ```bash
