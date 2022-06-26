@@ -2571,7 +2571,6 @@ git push --set-upstream origin feature/msp-18
 - Create Ansible playbook for deploying application as `dev-petclinic-deploy-template` under `ansible/playbooks` folder.
 
 ```yaml
----
 - hosts: role_master
   tasks:
 
