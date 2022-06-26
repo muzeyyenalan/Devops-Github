@@ -2376,10 +2376,11 @@ helm repo ls
 AWS_REGION=us-east-1 helm repo add stable-petclinicapp s3://petclinic-helm-charts-<put-your-name>/stable/myapp/
 ```
 
-* Update `version` field of `k8s/petclinic_chart/Chart.yaml` file as below for testing.
+* Update `version` and `appVersion` field of `k8s/petclinic_chart/Chart.yaml` file as below for testing.
 
 ```yaml
 version: 1.1.1
+appVersion: 0.1.0
 ```
 
 * Package the local Helm chart.
@@ -2425,6 +2426,7 @@ HELM_S3_MODE=3 AWS_REGION=us-east-1 helm s3 push ./petclinic_chart-1.1.2.tgz sta
 ```bash
 helm repo update
 helm search repo stable-petclinicapp
+helm search repo stable-petclinicapp -l
 ```
 
 * You get an output as below.
