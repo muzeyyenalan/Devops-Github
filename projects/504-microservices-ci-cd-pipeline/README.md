@@ -2333,7 +2333,7 @@ DNS_NAME: "DNS Name of your application"
 
 * This pattern helps you to manage Helm v3 charts efficiently by integrating the Helm v3 repository into Amazon Simple Storage Service (Amazon S3) on the Amazon Web Services (AWS) Cloud. (https://docs.aws.amazon.com/prescriptive-guidance/latest/patterns/set-up-a-helm-v3-chart-repository-in-amazon-s3.html)
 
-* Create an S3 bucket for Helm charts. In the bucket, create a folder called stable/myapp. The example in this pattern uses s3://petclinic-helm-charts/stable/myapp as the target chart repository.
+* Create an S3 bucket for Helm charts. In the bucket, create a folder called stable/myapp. The example in this pattern uses s3://petclinic-helm-charts-<put-your-name>/stable/myapp as the target chart repository.
 
 ```bash
 aws s3api create-bucket --bucket petclinic-helm-charts-<put-your-name> --region us-east-1
@@ -2358,7 +2358,7 @@ helm plugin install https://github.com/hypnoglow/helm-s3.git
 * Initialize the Amazon S3 Helm repository.
 
 ```bash
-AWS_REGION=us-east-1 helm s3 init s3://petclinic-helm-charts/stable/myapp 
+AWS_REGION=us-east-1 helm s3 init s3://petclinic-helm-charts-<put-your-name>/stable/myapp 
 ```
 
 * The command creates an index.yaml file in the target to track all the chart information that is stored at that location.
@@ -2366,14 +2366,14 @@ AWS_REGION=us-east-1 helm s3 init s3://petclinic-helm-charts/stable/myapp
 * Verify that the index.yaml file was created.
 
 ```bash
-aws s3 ls s3://petclinic-helm-charts/stable/myapp/
+aws s3 ls s3://petclinic-helm-charts-<put-your-name>/stable/myapp/
 ```
 
 * Add the Amazon S3 repository to Helm on the client machine. 
 
 ```bash
 helm repo ls
-AWS_REGION=us-east-1 helm repo add stable-petclinicapp s3://petclinic-helm-charts/stable/myapp/
+AWS_REGION=us-east-1 helm repo add stable-petclinicapp s3://petclinic-helm-charts-<put-your-name>/stable/myapp/
 ```
 
 * Update `version` field of `k8s/petclinic_chart/Chart.yaml` file as below for testing.
@@ -2593,7 +2593,7 @@ git push --set-upstream origin feature/msp-18
       kubectl create secret generic regcred -n petclinic-dev \
         --from-file=.dockerconfigjson=/home/ubuntu/.docker/config.json \
         --type=kubernetes.io/dockerconfigjson
-      AWS_REGION=$AWS_REGION helm repo add stable-petclinic s3://petclinic-helm-charts/stable/myapp/
+      AWS_REGION=$AWS_REGION helm repo add stable-petclinic s3://petclinic-helm-charts-<put-your-name>/stable/myapp/
       AWS_REGION=$AWS_REGION helm repo update
       AWS_REGION=$AWS_REGION helm upgrade --install \
         petclinic-app-release stable-petclinic/petclinic_chart --version ${BUILD_NUMBER} \
@@ -2796,7 +2796,7 @@ pipeline {
                 echo 'Deploying App on Kubernetes'
                 sh "envsubst < k8s/petclinic_chart/values-template.yaml > k8s/petclinic_chart/values.yaml"
                 sh "sed -i s/HELM_VERSION/${BUILD_NUMBER}/ k8s/petclinic_chart/Chart.yaml"
-                sh "helm repo add stable-petclinic s3://petclinic-helm-charts/stable/myapp/"
+                sh "helm repo add stable-petclinic s3://petclinic-helm-charts-<put-your-name>/stable/myapp/"
                 sh "helm package k8s/petclinic_chart"
                 sh "helm s3 push petclinic_chart-${BUILD_NUMBER}.tgz stable-petclinic"
                 sh "envsubst < ansible/playbooks/dev-petclinic-deploy-template > ansible/playbooks/dev-petclinic-deploy.yaml"
