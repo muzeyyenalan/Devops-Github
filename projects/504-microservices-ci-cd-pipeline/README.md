@@ -2372,6 +2372,7 @@ aws s3 ls s3://petclinic-helm-charts/stable/myapp/
 * Add the Amazon S3 repository to Helm on the client machine. 
 
 ```bash
+helm repo ls
 AWS_REGION=us-east-1 helm repo add stable-petclinicapp s3://petclinic-helm-charts/stable/myapp/
 ```
 
