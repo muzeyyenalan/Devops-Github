@@ -2337,7 +2337,7 @@ DNS_NAME: "DNS Name of your application"
 
 ```bash
 aws s3api create-bucket --bucket petclinic-helm-charts-<put-your-name> --region us-east-1
-aws s3api put-object --bucket et-petclinic-helm-charts-<put-your-name> --key stable/myapp
+aws s3api put-object --bucket et-petclinic-helm-charts-<put-your-name> --key stable/myapp/
 ```
 
 * Install the helm-s3 plugin for Amazon S3.
