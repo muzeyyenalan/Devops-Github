@@ -2142,7 +2142,7 @@ git push origin dev
 * Create `feature/msp-17` branch from `release`.
 
 ``` bash
-git checkout release
+git checkout dev
 git branch feature/msp-17
 git checkout feature/msp-17
 ```
