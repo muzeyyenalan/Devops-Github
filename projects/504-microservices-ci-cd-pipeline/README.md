@@ -2335,6 +2335,11 @@ DNS_NAME: "DNS Name of your application"
 
 * Create an S3 bucket for Helm charts. In the bucket, create a folder called stable/myapp. The example in this pattern uses s3://petclinic-helm-charts/stable/myapp as the target chart repository.
 
+```bash
+aws s3api create-bucket --bucket petclinic-helm-charts-<put-your-name> --region us-east-1
+aws s3api put-object --bucket et-petclinic-helm-charts-<put-your-name> --key stable/myapp
+```
+
 * Install the helm-s3 plugin for Amazon S3.
 
 ```bash
