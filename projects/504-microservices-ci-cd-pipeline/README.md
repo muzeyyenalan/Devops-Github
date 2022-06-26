@@ -195,7 +195,7 @@ git branch feature/msp-5
 git checkout feature/msp-5
 ```
 
-* Create a folder for infrastructure setup with the name of `infrastructure`.
+* Create a folder for infrastructure setup with the name of `infrastructure` under `petclinic-microservices-with-db` folder.
 
 ``` bash
 mkdir infrastructure
@@ -2147,7 +2147,7 @@ git branch feature/msp-17
 git checkout feature/msp-17
 ```
 
-* Create a folder with name of `k8s` for keeping the deployment files of Petclinic App on Kubernetes cluster.
+* Create a folder with name of `k8s` under `petclinic-microservices-with-db` folder for keeping the manifest files of Petclinic App on Kubernetes cluster.
 
 * Create a `docker-compose.yml` under `k8s` folder with the following content as to be used in conversion the k8s files.
 
