@@ -2200,6 +2200,7 @@ services:
       kompose.image-pull-secret: "regcred"
       kompose.service.expose: "{{ .Values.DNS_NAME }}"
       kompose.service.type: "nodeport"
+      kompose.service.nodeport.port: "30001"
   tracing-server:
     image: openzipkin/zipkin
     environment:
@@ -2298,19 +2299,6 @@ spec:
   rules:
     - host: '{{ .Values.DNS_NAME }}'
       ...
-```
-
-* Add `nodePort: 30001` to `spec.ports` field of `api-gateway-service.yaml` file for selenium tests as below.
-
-```yaml
-...
-spec:
-  ports:
-    - name: "8080"
-      port: 8080
-      targetPort: 8080
-      nodePort: 30001
-...
 ```
 
 * Add `k8s/petclinic_chart/values-template.yaml` file as below.
