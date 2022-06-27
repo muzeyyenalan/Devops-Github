@@ -2137,6 +2137,7 @@ git checkout dev
 git merge feature/msp-16
 git push origin dev
 ```
+
 ## MSP 17 - Prepare Petlinic Kubernetes YAML Files
 
 * Create `feature/msp-17` branch from `release`.
@@ -2334,7 +2335,7 @@ aws s3api put-object --bucket petclinic-helm-charts-<put-your-name> --key stable
 helm plugin install https://github.com/hypnoglow/helm-s3.git
 ```
 
-* On some systems we need to install Helm S3 plugin as Jenkins user to be able to use S3 with pipeline script. 
+* On some systems we need to install Helm S3 plugin as Jenkins user to be able to use S3 with pipeline script.
 
 ``` bash
 sudo su -s /bin/bash jenkins
@@ -2633,6 +2634,14 @@ PATH="$PATH:/usr/local/bin"
 ansible-playbook --connection=local --inventory 127.0.0.1, --extra-vars "workspace=${WORKSPACE}" ./ansible/playbooks/pb_run_dummy_selenium_job.yaml
 ```
 
+- Run the following command to test the `dummy_selenium_test_headless.py` file.
+
+```bash
+cd petclinic-microservices-with-db/
+ansible-playbook --connection=local --inventory 127.0.0.1, --extra-vars "workspace=$(pwd)" ./ansible/playbooks/pb_run_dummy_selenium_job.yaml
+```
+- Next, you can change something in the `dummy_selenium_test_headless.py` (I'm Feeling Lucks) and run the command again. And check the test ``passed`` or ``failed``. 
+
 - Commit the change, then push the scripts for dummy selenium job to the remote repo.
 
 ```bash
@@ -2671,7 +2680,7 @@ url = "http://"+APP_IP.strip()+":30001/"
 
 ```bash
 PATH="$PATH:/usr/local/bin"
-ansible-playbook -vvv --connection=local --inventory 127.0.0.1, --extra-vars "workspace=${WORKSPACE} master_public_ip=${GRAND_MASTER_PUBLIC_IP}" ./ansible/playbooks/pb_run_selenium_jobs.yaml
+ansible-playbook -vvv --connection=local --inventory 127.0.0.1, --extra-vars "workspace=${WORKSPACE} master_public_ip=${MASTER_PUBLIC_IP}" ./ansible/playbooks/pb_run_selenium_jobs.yaml
 ```
 
 - Prepare a Jenkinsfile for `petclinic-nightly` builds and save it as `jenkinsfile-petclinic-nightly` under `jenkins` folder.
@@ -3093,7 +3102,7 @@ docker push "${IMAGE_TAG_PROMETHEUS_SERVICE}"
       kubectl create secret generic regcred -n petclinic-qa \
         --from-file=.dockerconfigjson=/home/ubuntu/.docker/config.json \
         --type=kubernetes.io/dockerconfigjson
-      AWS_REGION=$AWS_REGION helm repo add stable-petclinic s3://petclinic-helm-charts/stable/myapp/
+      AWS_REGION=$AWS_REGION helm repo add stable-petclinic s3://petclinic-helm-charts-<put-your-name>/stable/myapp/
       AWS_REGION=$AWS_REGION helm repo update
       AWS_REGION=$AWS_REGION helm upgrade --install \
         petclinic-app-release stable-petclinic/petclinic_chart --version ${BUILD_NUMBER} \
@@ -3106,7 +3115,7 @@ docker push "${IMAGE_TAG_PROMETHEUS_SERVICE}"
 echo 'Deploying App on Kubernetes'
 sh "envsubst < k8s/petclinic_chart/values-template.yaml > k8s/petclinic_chart/values.yaml"
 sh "sed -i s/HELM_VERSION/${BUILD_NUMBER}/ k8s/petclinic_chart/Chartyaml"
-sh "helm repo add stable-petclinic s3://petclinic-helm-charts/stablemyapp/"
+sh "helm repo add stable-petclinic s3://petclinic-helm-charts-<put-your-name>/stablemyapp/"
 sh "helm package k8s/petclinic_chart"
 sh "helm s3 push petclinic_chart-${BUILD_NUMBER}.tgz stable-petclinic"
 sh "envsubst < ansible/playbooks/qa-petclinic-deploy-template >ansible/playbooks/qa-petclinic-deploy.yaml"
@@ -3120,7 +3129,7 @@ sh "ansible-playbook -i ./ansible/inventory/qa_stack_dynamic_inventory_aws_ec2.y
 echo 'Deploying App on Kubernetes'
 envsubst < k8s/petclinic_chart/values-template.yaml > k8s/petclinic_chart/values.yaml
 sed -i s/HELM_VERSION/${BUILD_NUMBER}/ k8s/petclinic_chart/Chart.yaml
-AWS_REGION=$AWS_REGION helm repo add stable-petclinic s3://petclinic-helm-charts/stablemyapp/ || echo "repository name already exists"
+AWS_REGION=$AWS_REGION helm repo add stable-petclinic s3://petclinic-helm-charts-<put-your-name>/stablemyapp/ || echo "repository name already exists"
 AWS_REGION=$AWS_REGION helm repo update
 helm package k8s/petclinic_chart
 AWS_REGION=$AWS_REGION helm s3 push petclinic_chart-${BUILD_NUMBER}.tgz stable-petclinic
