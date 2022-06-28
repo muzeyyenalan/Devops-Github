@@ -2368,7 +2368,7 @@ AWS_REGION=us-east-1 helm repo add stable-petclinicapp s3://petclinic-helm-chart
 * Update `version` and `appVersion` field of `k8s/petclinic_chart/Chart.yaml` file as below for testing.
 
 ```yaml
-version: 1.1.1
+version: 0.0.1
 appVersion: 0.1.0
 ```
 
@@ -2395,10 +2395,10 @@ helm search repo stable-petclinicapp
 
 ```bash
 NAME                                    CHART VERSION   APP VERSION     DESCRIPTION                
-stable-petclinicapp/petclinic_chart     1.1.1           0.1.0           A Helm chart for Kubernetes
+stable-petclinicapp/petclinic_chart     0.0.1           0.1.0           A Helm chart for Kubernetes
 ```
 
-* In Chart.yaml, set the `version` value to `1.1.2` in Chart.yaml, and then package the chart, this time changing the version in Chart.yaml to 1.1.2. Version control is ideally achieved through automation by using tools like GitVersion or Jenkins build numbers in a CI/CD pipeline. 
+* In Chart.yaml, set the `version` value to `0.0.2` in Chart.yaml, and then package the chart, this time changing the version in Chart.yaml to 0.0.2. Version control is ideally achieved through automation by using tools like GitVersion or Jenkins build numbers in a CI/CD pipeline. 
 
 ```bash
 helm package petclinic_chart/
@@ -2422,7 +2422,7 @@ helm search repo stable-petclinicapp -l
 
 ```bash
 NAME                                    CHART VERSION   APP VERSION     DESCRIPTION                
-stable-petclinicapp/petclinic_chart     1.1.2           0.1.0           A Helm chart for Kubernetes
+stable-petclinicapp/petclinic_chart     0.0.2           0.1.0           A Helm chart for Kubernetes
 ```
 
 * To view all the available versions of a chart execute following command.
@@ -2435,8 +2435,8 @@ helm search repo stable-petclinicapp --versions
 
 ```bash
 NAME                                    CHART VERSION   APP VERSION     DESCRIPTION                
-stable-petclinicapp/petclinic_chart     1.1.2           0.1.0           A Helm chart for Kubernetes
-stable-petclinicapp/petclinic_chart     1.1.1           0.1.0           A Helm chart for Kubernetes
+stable-petclinicapp/petclinic_chart     0.0.2           0.1.0           A Helm chart for Kubernetes
+stable-petclinicapp/petclinic_chart     0.0.1           0.1.0           A Helm chart for Kubernetes
 ```
 
 * In Chart.yaml, set the `version` value to `HELM_VERSION` in Chart.yaml for automation in jenkins pipeline.
