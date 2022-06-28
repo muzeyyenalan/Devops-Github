@@ -2140,7 +2140,7 @@ git push origin dev
 
 ## MSP 17 - Prepare Petlinic Kubernetes YAML Files
 
-* Create `feature/msp-17` branch from `release`.
+* Create `feature/msp-17` branch from `dev`.
 
 ``` bash
 git checkout dev
