@@ -2140,7 +2140,7 @@ git push origin dev
 
 ## MSP 17 - Prepare Petlinic Kubernetes YAML Files
 
-* Create `feature/msp-17` branch from `release`.
+* Create `feature/msp-17` branch from `dev`.
 
 ``` bash
 git checkout dev
@@ -2368,7 +2368,7 @@ AWS_REGION=us-east-1 helm repo add stable-petclinicapp s3://petclinic-helm-chart
 * Update `version` and `appVersion` field of `k8s/petclinic_chart/Chart.yaml` file as below for testing.
 
 ```yaml
-version: 1.1.1
+version: 0.0.1
 appVersion: 0.1.0
 ```
 
@@ -2395,10 +2395,10 @@ helm search repo stable-petclinicapp
 
 ```bash
 NAME                                    CHART VERSION   APP VERSION     DESCRIPTION                
-stable-petclinicapp/petclinic_chart     1.1.1           0.1.0           A Helm chart for Kubernetes
+stable-petclinicapp/petclinic_chart     0.0.1           0.1.0           A Helm chart for Kubernetes
 ```
 
-* In Chart.yaml, set the `version` value to `1.1.2` in Chart.yaml, and then package the chart, this time changing the version in Chart.yaml to 1.1.2. Version control is ideally achieved through automation by using tools like GitVersion or Jenkins build numbers in a CI/CD pipeline. 
+* In Chart.yaml, set the `version` value to `0.0.2` in Chart.yaml, and then package the chart, this time changing the version in Chart.yaml to 0.0.2. Version control is ideally achieved through automation by using tools like GitVersion or Jenkins build numbers in a CI/CD pipeline. 
 
 ```bash
 helm package petclinic_chart/
@@ -2422,7 +2422,7 @@ helm search repo stable-petclinicapp -l
 
 ```bash
 NAME                                    CHART VERSION   APP VERSION     DESCRIPTION                
-stable-petclinicapp/petclinic_chart     1.1.2           0.1.0           A Helm chart for Kubernetes
+stable-petclinicapp/petclinic_chart     0.0.2           0.1.0           A Helm chart for Kubernetes
 ```
 
 * To view all the available versions of a chart execute following command.
@@ -2435,8 +2435,8 @@ helm search repo stable-petclinicapp --versions
 
 ```bash
 NAME                                    CHART VERSION   APP VERSION     DESCRIPTION                
-stable-petclinicapp/petclinic_chart     1.1.2           0.1.0           A Helm chart for Kubernetes
-stable-petclinicapp/petclinic_chart     1.1.1           0.1.0           A Helm chart for Kubernetes
+stable-petclinicapp/petclinic_chart     0.0.2           0.1.0           A Helm chart for Kubernetes
+stable-petclinicapp/petclinic_chart     0.0.1           0.1.0           A Helm chart for Kubernetes
 ```
 
 * In Chart.yaml, set the `version` value to `HELM_VERSION` in Chart.yaml for automation in jenkins pipeline.
@@ -3109,20 +3109,6 @@ docker push "${IMAGE_TAG_PROMETHEUS_SERVICE}"
         --namespace petclinic-qa
 ```
 
-- Create Ansible playbook for deploying app on QA environment and save it as `pb_deploy_app_on_qa_environment.yaml` under `ansible/playbooks` folder.
-
-```yaml
-echo 'Deploying App on Kubernetes'
-sh "envsubst < k8s/petclinic_chart/values-template.yaml > k8s/petclinic_chart/values.yaml"
-sh "sed -i s/HELM_VERSION/${BUILD_NUMBER}/ k8s/petclinic_chart/Chartyaml"
-sh "helm repo add stable-petclinic s3://petclinic-helm-charts-<put-your-name>/stablemyapp/"
-sh "helm package k8s/petclinic_chart"
-sh "helm s3 push petclinic_chart-${BUILD_NUMBER}.tgz stable-petclinic"
-sh "envsubst < ansible/playbooks/qa-petclinic-deploy-template >ansible/playbooks/qa-petclinic-deploy.yaml"
-sh "sleep 60"    
-sh "ansible-playbook -i ./ansible/inventory/qa_stack_dynamic_inventory_aws_ec2.yaml ./ansible/playbooks/qa-petclinic-deploy.yaml"
-```
-
 - Prepare a script to deploy the application on QA environment and save it as `deploy_app_on_qa_environment.sh` under `ansible/scripts` folder.
 
 ```bash
@@ -3308,5 +3294,305 @@ git push origin dev
 ```bash
 git checkout release
 git merge dev
+git push origin release
+```
+
+## MSP 23 - Prepare High-availability RKE Kubernetes Cluster on AWS EC2
+
+* Create `feature/msp-23` branch from `release`.
+
+``` bash
+git checkout release
+git branch feature/msp-23
+git checkout feature/msp-23
+```
+
+* Explain [Rancher Container Management Tool](https://rancher.com/docs/rancher/v2.x/en/overview/architecture/).
+
+* Create an IAM Policy with name of `call-rke-controlplane-policy.json` and also save it under `infrastructure` for `Control Plane` node to enable Rancher to create or remove EC2 resources.
+
+``` json
+{
+"Version": "2012-10-17",
+"Statement": [
+  {
+    "Effect": "Allow",
+    "Action": [
+      "autoscaling:DescribeAutoScalingGroups",
+      "autoscaling:DescribeLaunchConfigurations",
+      "autoscaling:DescribeTags",
+      "ec2:DescribeInstances",
+      "ec2:DescribeRegions",
+      "ec2:DescribeRouteTables",
+      "ec2:DescribeSecurityGroups",
+      "ec2:DescribeSubnets",
+      "ec2:DescribeVolumes",
+      "ec2:CreateSecurityGroup",
+      "ec2:CreateTags",
+      "ec2:CreateVolume",
+      "ec2:ModifyInstanceAttribute",
+      "ec2:ModifyVolume",
+      "ec2:AttachVolume",
+      "ec2:AuthorizeSecurityGroupIngress",
+      "ec2:CreateRoute",
+      "ec2:DeleteRoute",
+      "ec2:DeleteSecurityGroup",
+      "ec2:DeleteVolume",
+      "ec2:DetachVolume",
+      "ec2:RevokeSecurityGroupIngress",
+      "ec2:DescribeVpcs",
+      "elasticloadbalancing:AddTags",
+      "elasticloadbalancing:AttachLoadBalancerToSubnets",
+      "elasticloadbalancing:ApplySecurityGroupsToLoadBalancer",
+      "elasticloadbalancing:CreateLoadBalancer",
+      "elasticloadbalancing:CreateLoadBalancerPolicy",
+      "elasticloadbalancing:CreateLoadBalancerListeners",
+      "elasticloadbalancing:ConfigureHealthCheck",
+      "elasticloadbalancing:DeleteLoadBalancer",
+      "elasticloadbalancing:DeleteLoadBalancerListeners",
+      "elasticloadbalancing:DescribeLoadBalancers",
+      "elasticloadbalancing:DescribeLoadBalancerAttributes",
+      "elasticloadbalancing:DetachLoadBalancerFromSubnets",
+      "elasticloadbalancing:DeregisterInstancesFromLoadBalancer",
+      "elasticloadbalancing:ModifyLoadBalancerAttributes",
+      "elasticloadbalancing:RegisterInstancesWithLoadBalancer",
+      "elasticloadbalancing:SetLoadBalancerPoliciesForBackendServer",
+      "elasticloadbalancing:AddTags",
+      "elasticloadbalancing:CreateListener",
+      "elasticloadbalancing:CreateTargetGroup",
+      "elasticloadbalancing:DeleteListener",
+      "elasticloadbalancing:DeleteTargetGroup",
+      "elasticloadbalancing:DescribeListeners",
+      "elasticloadbalancing:DescribeLoadBalancerPolicies",
+      "elasticloadbalancing:DescribeTargetGroups",
+      "elasticloadbalancing:DescribeTargetHealth",
+      "elasticloadbalancing:ModifyListener",
+      "elasticloadbalancing:ModifyTargetGroup",
+      "elasticloadbalancing:RegisterTargets",
+      "elasticloadbalancing:SetLoadBalancerPoliciesOfListener",
+      "iam:CreateServiceLinkedRole",
+      "kms:DescribeKey"
+    ],
+    "Resource": [
+      "*"
+    ]
+  }
+]
+}
+```
+
+* Create an IAM Policy with name of `call-rke-etcd-worker-policy.json` and also save it under `infrastructure` for `etcd` or `worker` nodes to enable Rancher to get information from EC2 resources.
+
+```json
+{
+"Version": "2012-10-17",
+"Statement": [
+    {
+        "Effect": "Allow",
+        "Action": [
+            "ec2:DescribeInstances",
+            "ec2:DescribeRegions",
+            "ecr:GetAuthorizationToken",
+            "ecr:BatchCheckLayerAvailability",
+            "ecr:GetDownloadUrlForLayer",
+            "ecr:GetRepositoryPolicy",
+            "ecr:DescribeRepositories",
+            "ecr:ListImages",
+            "ecr:BatchGetImage"
+        ],
+        "Resource": "*"
+    }
+]
+}
+```
+
+* Create an IAM Role with name of `call-rke-role` to attach RKE nodes (instances) using `call-rke-controlplane-policy` and `call-rke-etcd-worker-policy`.
+
+* Create a security group for External Application Load Balancer of Rancher with name of `call-rke-alb-sg` and allow HTTP (Port 80) and HTTPS (Port 443) connections from anywhere.
+  
+* Create a security group for RKE Kubernetes Cluster with name of `call-rke-cluster-sg` and define following inbound and outbound rules.
+
+  * Inbound rules;
+
+    * Allow HTTP protocol (TCP on port 80) from Application Load Balancer.
+
+    * Allow HTTPS protocol (TCP on port 443) from any source that needs to use Rancher UI or API.
+
+    * Allow TCP on port 6443 from any source that needs to use Kubernetes API server(ex. Jenkins Server).
+  
+    * Allow SSH on port 22 to any node IP that installs Docker (ex. Jenkins Server).
+
+  * Outbound rules;
+
+    * Allow SSH protocol (TCP on port 22) to any node IP from a node created using Node Driver.
+
+    * Allow HTTP protocol (TCP on port 80) to all IP for getting updates.
+    
+    * Allow HTTPS protocol (TCP on port 443) to `35.160.43.145/32`, `35.167.242.46/32`, `52.33.59.17/32` for catalogs of `git.rancher.io`.
+
+    * Allow TCP on port 2376 to any node IP from a node created using Node Driver for Docker machine TLS port.
+
+  * Allow all protocol on all port from `call-rke-cluster-sg` for self communication between Rancher `controlplane`, `etcd`, `worker` nodes.
+
+* Log into Jenkins Server and create `call-rancher.pem` key-pair for Rancher Server using AWS CLI
+  
+```bash
+aws ec2 create-key-pair --region us-east-1 --key-name call-rancher.pem --query KeyMaterial --output text > ~/.ssh/call-rancher.pem
+chmod 400 ~/.ssh/call-rancher.pem
+```
+
+* Launch an EC2 instance using `Ubuntu Server 20.04 LTS (HVM) (64-bit x86)` with `t2.medium` type, 16 GB root volume,  `call-rke-cluster-sg` security group, `call-rke-role` IAM Role, `Name:Call-Rancher-Cluster-Instance` tag and `call-rancher.pem` key-pair. Take note of `subnet id` of EC2. 
+
+* Attach a tag to the `nodes (intances)`, `subnets` and `security group` for Rancher with `Key = kubernetes.io/cluster/Call-Rancher` and `Value = owned`.
+  
+* Install `kubectl` on Jenkins Server. [Install and Set up kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/#install-kubectl)
+
+```bash
+curl -o kubectl https://amazon-eks.s3.us-west-2.amazonaws.com/1.18.9/2020-11-02/bin/linux/amd64/kubectl
+sudo mv kubectl /usr/local/bin/kubectl
+chmod +x /usr/local/bin/kubectl
+kubectl version --short --client
+```  
+  
+* Log into `Call-Rancher-Cluster-Instance` from Jenkins Server (Bastion host) and install Docker using the following script.
+
+```bash
+# Set hostname of instance
+sudo hostnamectl set-hostname rancher-instance-1
+# Update OS 
+sudo apt-get update -y
+sudo apt-get upgrade -y
+# Install and start Docker on Ubuntu 19.03
+# Update the apt package index and install packages to allow apt to use a repository over HTTPS
+sudo apt-get install \
+  apt-transport-https \
+  ca-certificates \
+  curl \
+  gnupg \
+  lsb-release
+# Add Docker’s official GPG key
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+# Use the following command to set up the stable repository
+echo \
+  "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \
+  $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+# Update packages
+sudo apt-get update
+
+# Install and start Docker
+sudo apt-get install docker-ce docker-ce-cli containerd.io
+sudo systemctl start docker
+sudo systemctl enable docker
+
+# Add ubuntu user to docker group
+sudo usermod -aG docker ubuntu
+newgrp docker
+```
+
+* Create a target groups with name of `call-rancher-http-80-tg` with following setup and add the `rancher instances` to it.
+
+```bash
+Target type         : instance
+Protocol            : HTTP
+Port                : 80
+
+<!-- Health Checks Settings -->
+Protocol            : HTTP
+Path                : /healthz
+Port                : traffic port
+Healthy threshold   : 3
+Unhealthy threshold : 3
+Timeout             : 5 seconds
+Interval            : 10 seoconds
+Success             : 200
+```
+
+* Create Application Load Balancer with name of `call-rancher-alb` using `call-rke-alb-sg` security group with following settings and add `call-rancher-http-80-tg` target group to it.
+
+```text
+Scheme              : internet-facing
+IP address type     : ipv4
+
+<!-- Listeners-->
+Protocol            : HTTPS/HTTP
+Port                : 443/80
+Availability Zones  : Select AZs of RKE instances
+Target group        : `call-rancher-http-80-tg` target group 
+```
+
+* Configure ALB Listener of HTTP on `Port 80` to redirect traffic to HTTPS on `Port 443`.
+
+* Create DNS A record for `rancher.clarusway.us` and attach the `call-rancher-alb` application load balancer to it.
+
+* Install RKE, the Rancher Kubernetes Engine, [Kubernetes distribution and command-line tool](https://rancher.com/docs/rke/latest/en/installation/)) on Jenkins Server.
+
+```bash
+curl -SsL "https://github.com/rancher/rke/releases/download/v1.3.7/rke_linux-amd64" -o "rke_linux-amd64"
+sudo mv rke_linux-amd64 /usr/local/bin/rke
+chmod +x /usr/local/bin/rke
+rke --version
+```
+
+* Create `rancher-cluster.yml` with following content to configure RKE Kubernetes Cluster and save it under `infrastructure` folder.
+
+```yaml
+nodes:
+  - address: 172.31.82.64
+    internal_address: 172.31.82.64
+    user: ubuntu
+    role:
+      - controlplane
+      - etcd
+      - worker
+
+# ignore_docker_version: true
+
+services:
+  etcd:
+    snapshot: true
+    creation: 6h
+    retention: 24h
+
+ssh_key_path: ~/.ssh/davids-test-rancher.key
+
+# Required for external TLS termination with
+# ingress-nginx v0.22+
+ingress:
+  provider: nginx
+  options:
+    use-forwarded-headers: "true"
+```
+
+* Run `rke` command to setup RKE Kubernetes cluster on EC2 Rancher instance *`Warning:` You should add rule to cluster sec group for Jenkins Server using its `IP/32` from SSH (22) and TCP(6443) before running `rke` command, because it is giving connection error.*
+
+```bash
+rke up --config ./rancher-cluster.yml
+```
+
+* Check if the RKE Kubernetes Cluster created successfully.
+
+```bash
+mkdir -p ~/.kube
+mv ./kube_config_rancher-cluster.yml $HOME/.kube/config
+chmod 400 ~/.kube/config
+kubectl get nodes
+kubectl get pods --all-namespaces
+```
+
+* If bootstrap pod is not initialized or you forget your admin password you can use the below command to reset your password.
+
+```bash
+export KUBECONFIG=~/.kube/config
+kubectl --kubeconfig $KUBECONFIG -n cattle-system exec $(kubectl --kubeconfig $KUBECONFIG -n cattle-system get pods -l app=rancher | grep '1/1' | head -1 | awk '{ print $1 }') -- reset-password
+```
+
+* Commit the change, then push the script to the remote repo.
+
+``` bash
+git add .
+git commit -m 'added rancher setup files'
+git push --set-upstream origin feature/msp-23
+git checkout release
+git merge feature/msp-23
 git push origin release
 ```
