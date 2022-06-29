@@ -1796,6 +1796,7 @@ regions:
 filters:
   tag:Project: tera-kube-ans
   tag:environment: dev
+  instance-state-name: running
 keyed_groups:
   - key: tags['Project']
     prefix: 'all_instances'
@@ -2925,6 +2926,7 @@ regions:
 filters:
   tag:Project: tera-kube-ans
   tag:environment: qa
+  instance-state-name: running
 keyed_groups:
   - key: tags['Project']
     prefix: 'all_instances'
