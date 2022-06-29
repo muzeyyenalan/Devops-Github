@@ -1750,7 +1750,7 @@ AWS_REGION="us-east-1"
 cd infrastructure/dev-k8s-terraform
 sed -i "s/mattkey/$ANS_KEYPAIR/g" main.tf
 terraform init
-terraform apply -auto-approve
+terraform apply -auto-approve -no-color
 ```
 
 - After running the job above, replace the script with the one below in order to test SSH connection with one of the instances.
@@ -1796,6 +1796,7 @@ regions:
 filters:
   tag:Project: tera-kube-ans
   tag:environment: dev
+  instance-state-name: running
 keyed_groups:
   - key: tags['Project']
     prefix: 'all_instances'
@@ -2086,7 +2087,7 @@ ansible-playbook -i ./ansible/inventory/dev_stack_dynamic_inventory_aws_ec2.yaml
 
 ```bash
 cd infrastructure/dev-k8s-terraform
-terraform destroy -auto-approve
+terraform destroy -auto-approve -no-color
 ```
 
 - After running the job above, replace the script with the one below in order to test deleting existing key pair using AWS CLI with following script.
@@ -2115,13 +2116,13 @@ chmod 400 ${ANS_KEYPAIR}
 # Create infrastructure for kubernetes
 cd infrastructure/dev-k8s-terraform
 terraform init
-terraform apply -auto-approve
+terraform apply -auto-approve -no-color
 # Install k8s cluster on the infrastructure
 ansible-playbook -i ./ansible/inventory/dev_stack_dynamic_inventory_aws_ec2.yaml ./ansible/playbooks/k8s_setup.yaml
 # Build, Deploy, Test the application
 # Tear down the k8s infrastructure
 cd infrastructure/dev-k8s-terraform
-terraform destroy -auto-approve
+terraform destroy -auto-approve -no-color
 # Delete key pair
 aws ec2 delete-key-pair --region ${AWS_REGION} --key-name ${ANS_KEYPAIR}
 rm -rf ${ANS_KEYPAIR}
@@ -2771,7 +2772,7 @@ pipeline {
                     cd infrastructure/dev-k8s-terraform
                     sed -i "s/mattkey/$ANS_KEYPAIR/g" main.tf
                     terraform init
-                    terraform apply -auto-approve
+                    terraform apply -auto-approve -no-color
                 """
                 script {
                     echo "Kubernetes Master is not UP and running yet."
@@ -2845,7 +2846,7 @@ pipeline {
             echo 'Tear down the Kubernetes Cluster'
             sh """
             cd infrastructure/dev-k8s-terraform
-            terraform destroy -auto-approve
+            terraform destroy -auto-approve -no-color
             """
             echo "Delete existing key pair using AWS CLI"
             sh "aws ec2 delete-key-pair --region ${AWS_REGION} --key-name ${ANS_KEYPAIR}"
@@ -2913,7 +2914,7 @@ ANS_KEYPAIR="matt-${APP_NAME}-qa.key"
 AWS_REGION="us-east-1"
 cd infrastructure/qa-k8s-terraform
 terraform init
-terraform apply -auto-approve
+terraform apply -auto-approve -no-color
 ```
 
 - Prepare dynamic inventory file with name of `qa_stack_dynamic_inventory_aws_ec2.yaml` for Ansible under `ansible/inventory` folder using Docker machines private IP addresses.
@@ -2925,6 +2926,7 @@ regions:
 filters:
   tag:Project: tera-kube-ans
   tag:environment: qa
+  instance-state-name: running
 keyed_groups:
   - key: tags['Project']
     prefix: 'all_instances'
@@ -2957,7 +2959,7 @@ pipeline {
                     cd infrastructure/qa-k8s-terraform
                     sed -i "s/mattkey/$ANS_KEYPAIR/g" main.tf
                     terraform init
-                    terraform apply -auto-approve
+                    terraform apply -auto-approve -no-color
                 """
                 script {
                     echo "Kubernetes Master is not UP and running yet."
@@ -2980,7 +2982,7 @@ pipeline {
             echo 'Tear down the Kubernetes Cluster infrastructure'
             sh """
             cd ${WORKSPACE}/infrastructure/qa-k8s-terraform
-            terraform destroy -auto-approve
+            terraform destroy -auto-approve -no-color
             """
         }
     }
@@ -3595,4 +3597,59 @@ git push --set-upstream origin feature/msp-23
 git checkout release
 git merge feature/msp-23
 git push origin release
+```
+
+## MSP 24 - Install Rancher App on RKE Kubernetes Cluster
+
+* Install Helm [version 3+](https://github.com/helm/helm/releases) on Jenkins Server. [Introduction to Helm](https://helm.sh/docs/intro/). [Helm Installation](https://helm.sh/docs/intro/install/).
+
+```bash
+curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
+helm version
+```
+
+* Add helm chart repositories of Rancher.
+
+```bash
+helm repo add rancher-latest https://releases.rancher.com/server-charts/latest
+helm repo list
+```
+
+* Create a namespace for Rancher.
+
+```bash
+kubectl create namespace cattle-system
+```
+
+* Install Rancher on RKE Kubernetes Cluster using Helm.
+
+```bash
+helm install rancher rancher-latest/rancher \
+  --namespace cattle-system \
+  --set hostname=rancher.clarusway.us \
+  --set tls=external \
+  --set replicas=1
+```
+
+* Check if the Rancher Server is deployed successfully.
+  
+```bash
+kubectl -n cattle-system get deploy rancher
+kubectl -n cattle-system get pods
+```
+
+## MSP 25 - Create Staging and Production Environment with Rancher
+
+* To provide access of Rancher to the cloud resources, create a `Cloud Credentials` for AWS on Rancher and name it as `Call-AWS-Training-Account`.
+
+* Create a `Node Template` on Rancher with following configuration for to be used while launching the EC2 instances and name it as `Call-AWS-RancherOs-Template`.
+
+```text
+Region            : us-east-1
+Security group    : create new sg (rancher-nodes)
+Instance Type     : t2.medium
+Root Disk Size    : 16 GB
+AMI (RancherOS)   : ami-0e8a3347e4c5959bd
+SSH User          : rancher
+Label             : os=rancheros
 ```
