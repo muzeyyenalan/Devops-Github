@@ -3555,7 +3555,7 @@ services:
     creation: 6h
     retention: 24h
 
-ssh_key_path: ~/.ssh/davids-test-rancher.key
+ssh_key_path: ~/.ssh/call-rancher.pem
 
 # Required for external TLS termination with
 # ingress-nginx v0.22+
