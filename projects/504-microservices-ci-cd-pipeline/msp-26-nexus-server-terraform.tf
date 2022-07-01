@@ -27,20 +27,31 @@ resource "aws_instance" "tf-nexus-server" {
   user_data = <<-EOF
   #! /bin/bash
   yum update -y
-  yum install java-1.8.0-openjdk -y
-  wget https://repos.fedorapeople.org/repos/dchen/apache-maven/epel-apache-maven.repo -O /etc/yum.repos.d/epel-apache-maven.repo
-  sed -i s/\$releasever/6/g /etc/yum.repos.d/epel-apache-maven.repo
-  cd /opt && yum install apache-maven -y
-  wget -O nexus.tar.gz https://download.sonatype.com/nexus/3/latest-unix.tar.gz
-  tar xvzf nexus.tar.gz
-  rm nexus.tar.gz
-  mv nexus-3* nexus
-  chown -R ec2-user:ec2-user /opt/nexus
-  chown -R ec2-user:ec2-user /opt/sonatype-work
-  export PATH=$PATH:/opt/nexus/bin
-  cd /opt && nexus start
+  yum install docker -y
+  systemctl start docker
+  systemctl enable docker
+  usermod -aG docker ec2-user
+  newgrp docker
+  docker volume create --name nexus-data
+  docker run -d -p 8081:8081 --name nexus -v nexus-data:/nexus-data sonatype/nexus3
   EOF
 }
+
+
+resource "null_resource" "forpasswd" {
+  depends_on = [aws_instance.tf-nexus-server]
+
+  provisioner "local-exec" {
+    command = "sleep 3m"
+  }
+
+  # Do not forget to define your key file path correctly!
+  provisioner "local-exec" {
+    command = "ssh -i ~/.ssh/tyler-team.pem -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ec2-user@${aws_instance.tf-nexus-server.public_ip} 'docker cp nexus:/nexus-data/admin.password  admin.password & cat /home/ec2-user/admin.password' > initialpasswd.txt"
+  }
+}
+
+
 
 resource "aws_security_group" "tf-nexus-sec-gr" {
   name = "nexus-server-sec-gr"

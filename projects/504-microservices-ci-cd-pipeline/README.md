@@ -3581,13 +3581,6 @@ kubectl get nodes
 kubectl get pods --all-namespaces
 ```
 
-* If bootstrap pod is not initialized or you forget your admin password you can use the below command to reset your password.
-
-```bash
-export KUBECONFIG=~/.kube/config
-kubectl --kubeconfig $KUBECONFIG -n cattle-system exec $(kubectl --kubeconfig $KUBECONFIG -n cattle-system get pods -l app=rancher | grep '1/1' | head -1 | awk '{ print $1 }') -- reset-password
-```
-
 * Commit the change, then push the script to the remote repo.
 
 ``` bash
@@ -3638,6 +3631,13 @@ kubectl -n cattle-system get deploy rancher
 kubectl -n cattle-system get pods
 ```
 
+* If bootstrap pod is not initialized or you forget your admin password you can use the below command to reset your password.
+
+```bash
+export KUBECONFIG=~/.kube/config
+kubectl --kubeconfig $KUBECONFIG -n cattle-system exec $(kubectl --kubeconfig $KUBECONFIG -n cattle-system get pods -l app=rancher | grep '1/1' | head -1 | awk '{ print $1 }') -- reset-password
+```
+  
 ## MSP 25 - Create Staging and Production Environment with Rancher
 
 * To provide access of Rancher to the cloud resources, create a `Cloud Credentials` for AWS on Rancher and name it as `Call-AWS-Training-Account`.
@@ -3692,11 +3692,11 @@ docker run -d -p 8081:8081 --name nexus -v nexus-data:/nexus-data sonatype/nexus
 - Open your browser to load the repository manager: `http://<AWS public dns>:8081` and click `Sing in` upper right of the page. A box will pop up.
 Write `admin` for Username and paste the string which you copied from admin.password file for the password.
 
-- Use the content of the `initialpasswd.txt` file that is under the same directory of terrafom file. ("provisioner" blok of the tf file copies the content of the  `admin.password` file in the contayner to the `initialpasswd.txt` in the local host.)
+- Use the content of the `initialpasswd.txt` file that is under the same directory of terrafom file. ("provisioner" blok of the tf file copies the content of the  `admin.password` file in the container to the `initialpasswd.txt` in the local host.)
 
 - Click the Sign in button to start the Setup wizard. Click Next through the steps to update your password.
 
-- Leave the Enable Anonymous Access box unchecked.
+- Click the Disable Anonymous Access box.
 
 - Click Finish to complete the wizard.
 
@@ -3704,13 +3704,13 @@ Write `admin` for Username and paste the string which you copied from admin.pass
 
 - Nexus searchs for settings.xml in the `/home/ec2-user/.m2` directory. .m2 directory is created after running the first mvn command.
 
-- Create teh settings.xml file.
-```
+- Create the settings.xml file.
+```bash
 nano /home/ec2-user/.m2/settings.xml
 ```
 
 - Your settings.xml file should look like this (Don't forget to change the URL of your repository and the password): 
-```
+```xml
 <settings>
   <mirrors>
     <mirror>
@@ -3757,17 +3757,17 @@ nano /home/ec2-user/.m2/settings.xml
 </settings>
 ```
 
-- Delete .m2 directory under /home/ec2-user/ to see if dependies download from the Nexus server.
+- ``Delete`` .m2 repository file under ``/home/ec2-user/.m2/repository`` to see if dependies download from the Nexus server.
 
 - run the mvn command to see if it is worked.
 
 ``` bash
-./mvnw clean package
+./mvnw clean
 ```
 
-- Add distributionManagement element given below to your pom.xml file after `</dependencies>` line. Include the endpoints to your maven-releases and maven-snapshots repos. Change localhost >>>> Private ip of your server.
+- Add distributionManagement element given below to your ``pom.xml`` file after `</dependencyManagement>` line. Include the endpoints to your maven-releases and maven-snapshots repos. Change localhost >>>> Private ip of your server.
 
-```
+```xml
 <distributionManagement>
   <repository>
     <id>nexus</id>
@@ -3784,11 +3784,12 @@ nano /home/ec2-user/.m2/settings.xml
 
 - Run following command; Created artifact will be stored in the nexus-releases repository.
 
-```
-./mvnw clean deploy command
+```bash
+./mvnw clean deploy
 ```
 
 - Note: if you want to redeploy the same artifact to release repository, you need to set Deployment policy : "Allow redeploy".
+(nexus server --> server configuration --> repositories --> maven releases --> Deployment policy : ``Allow redeploy``)
 
 * Commit the change, then push the cloudformation file to the remote repo.
 
@@ -3813,7 +3814,7 @@ git checkout feature/msp-27
 
 * Create a Kubernetes cluster using Rancher with RKE and new nodes in AWS  and name it as `petclinic-cluster-staging`.
 
-```text
+```yml
 Cluster Type      : Amazon EC2
 Name Prefix       : petclinic-k8s-instance
 Count             : 3
@@ -3895,9 +3896,9 @@ docker push "${IMAGE_TAG_PROMETHEUS_SERVICE}"
 * Install `Rancher CLI` on Jenkins Server.
 
 ```bash
-curl -SsL "https://github.com/rancher/cli/releases/download/v2.6.0/rancher-linux-amd64-v2.6.0.tar.gz" -o "rancher-cli.tar.gz"
+curl -SsL "https://github.com/rancher/cli/releases/download/v2.6.5/rancher-linux-amd64-v2.6.5.tar.gz" -o "rancher-cli.tar.gz"
 tar -zxvf rancher-cli.tar.gz
-sudo mv ./rancher-v2.6.0/rancher /usr/local/bin/rancher
+sudo mv ./rancher-v2.6.5/rancher /usr/local/bin/rancher
 chmod +x /usr/local/bin/rancher
 rancher --version
 ```
@@ -3912,15 +3913,6 @@ rancher --version
 
   * Define an id like `rancher-petclinic-credentials`.
 
-
-* On some systems we need to install Helm S3 plugin as Jenkins user to be able to use S3 with pipeline script. 
-
-``` bash
-sudo su -s /bin/bash jenkins
-export PATH=$PATH:/usr/local/bin
-helm version
-helm plugin install https://github.com/hypnoglow/helm-s3.git
-``` 
 
 * Create a Staging Pipeline on Jenkins with name of `petclinic-staging` with following script and configure a `cron job` to trigger the pipeline every Sundays at midnight (`59 23 * * 0`) on `release` branch. `Petclinic staging pipeline` should be deployed on permanent staging-environment on `petclinic-cluster` Kubernetes cluster under `petclinic-staging-ns` namespace.
 
@@ -3937,7 +3929,7 @@ pipeline {
         AWS_REGION="us-east-1"
         ECR_REGISTRY="${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com"
         RANCHER_URL="https://rancher.clarusway.us"
-        // Get the project-id from Rancher UI (petclinic-cluster-staging namespace, View in API, copy projectId )
+        // Get the project-id from Rancher UI (projects/namespaces --> petclinic-cluster-staging namespace --> Edit yaml --> copy projectId )
         RANCHER_CONTEXT="petclinic-cluster:project-id" 
        //First part of projectID
         CLUSTERID="petclinic-cluster"
@@ -4045,7 +4037,7 @@ git checkout feature/msp-28
 
 * Create a Kubernetes cluster using Rancher with RKE and new nodes in AWS (on one EC2 instance only) and name it as `petclinic-cluster`.
 
-```text
+```yml
 Cluster Type      : Amazon EC2
 Name Prefix       : petclinic-k8s-instance
 Count             : 3
@@ -4126,6 +4118,7 @@ docker push "${IMAGE_TAG_PROMETHEUS_SERVICE}"
 
 - At this stage, we will use Amazon RDS instead of mysql pod and service. Create a mysql database on AWS RDS.
 
+```yml
   - Engine options: MySQL
   - Version : 5.7.30
   - Templates: Free tier
@@ -4134,6 +4127,7 @@ docker push "${IMAGE_TAG_PROMETHEUS_SERVICE}"
   - Master password: petclinic
   - Public access: Yes
   - Initial database name: petclinic
+```
 
 - Delete mysql-server-deployment.yaml file from k8s/petclinic_chart/templates folder.
 
