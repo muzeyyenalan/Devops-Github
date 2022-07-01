@@ -3692,11 +3692,11 @@ docker run -d -p 8081:8081 --name nexus -v nexus-data:/nexus-data sonatype/nexus
 - Open your browser to load the repository manager: `http://<AWS public dns>:8081` and click `Sing in` upper right of the page. A box will pop up.
 Write `admin` for Username and paste the string which you copied from admin.password file for the password.
 
-- Use the content of the `initialpasswd.txt` file that is under the same directory of terrafom file. ("provisioner" blok of the tf file copies the content of the  `admin.password` file in the contayner to the `initialpasswd.txt` in the local host.)
+- Use the content of the `initialpasswd.txt` file that is under the same directory of terrafom file. ("provisioner" blok of the tf file copies the content of the  `admin.password` file in the container to the `initialpasswd.txt` in the local host.)
 
 - Click the Sign in button to start the Setup wizard. Click Next through the steps to update your password.
 
-- Leave the Enable Anonymous Access box unchecked.
+- Click the Disable Anonymous Access box.
 
 - Click Finish to complete the wizard.
 
@@ -3757,15 +3757,15 @@ nano /home/ec2-user/.m2/settings.xml
 </settings>
 ```
 
-- Delete .m2 directory under /home/ec2-user/ to see if dependies download from the Nexus server.
+- ``Delete`` .m2 repository file under ``/home/ec2-user/.m2/repository`` to see if dependies download from the Nexus server.
 
 - run the mvn command to see if it is worked.
 
 ``` bash
-./mvnw clean package
+./mvnw clean
 ```
 
-- Add distributionManagement element given below to your pom.xml file after `</dependencies>` line. Include the endpoints to your maven-releases and maven-snapshots repos. Change localhost >>>> Private ip of your server.
+- Add distributionManagement element given below to your ``pom.xml`` file after `</dependencyManagement>` line. Include the endpoints to your maven-releases and maven-snapshots repos. Change localhost >>>> Private ip of your server.
 
 ```xml
 <distributionManagement>
@@ -3785,10 +3785,11 @@ nano /home/ec2-user/.m2/settings.xml
 - Run following command; Created artifact will be stored in the nexus-releases repository.
 
 ```bash
-./mvnw clean deploy command
+./mvnw clean deploy
 ```
 
 - Note: if you want to redeploy the same artifact to release repository, you need to set Deployment policy : "Allow redeploy".
+(nexus server --> server configuration --> repositories --> maven releases --> Deployment policy : ``Allow redeploy``)
 
 * Commit the change, then push the cloudformation file to the remote repo.
 
