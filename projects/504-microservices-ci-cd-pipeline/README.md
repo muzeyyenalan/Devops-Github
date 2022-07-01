@@ -3581,13 +3581,6 @@ kubectl get nodes
 kubectl get pods --all-namespaces
 ```
 
-* If bootstrap pod is not initialized or you forget your admin password you can use the below command to reset your password.
-
-```bash
-export KUBECONFIG=~/.kube/config
-kubectl --kubeconfig $KUBECONFIG -n cattle-system exec $(kubectl --kubeconfig $KUBECONFIG -n cattle-system get pods -l app=rancher | grep '1/1' | head -1 | awk '{ print $1 }') -- reset-password
-```
-
 * Commit the change, then push the script to the remote repo.
 
 ``` bash
@@ -3638,6 +3631,13 @@ kubectl -n cattle-system get deploy rancher
 kubectl -n cattle-system get pods
 ```
 
+* If bootstrap pod is not initialized or you forget your admin password you can use the below command to reset your password.
+
+```bash
+export KUBECONFIG=~/.kube/config
+kubectl --kubeconfig $KUBECONFIG -n cattle-system exec $(kubectl --kubeconfig $KUBECONFIG -n cattle-system get pods -l app=rancher | grep '1/1' | head -1 | awk '{ print $1 }') -- reset-password
+```
+  
 ## MSP 25 - Create Staging and Production Environment with Rancher
 
 * To provide access of Rancher to the cloud resources, create a `Cloud Credentials` for AWS on Rancher and name it as `Call-AWS-Training-Account`.
