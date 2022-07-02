@@ -3757,7 +3757,7 @@ nano /home/ec2-user/.m2/settings.xml
 </settings>
 ```
 
-- ``Delete`` .m2 repository file under ``/home/ec2-user/.m2/repository`` to see if dependies download from the Nexus server.
+- Delete `repository` folder under `/home/ec2-user/.m2` to see if dependies download from the Nexus server.
 
 - run the mvn command to see if it is worked.
 
