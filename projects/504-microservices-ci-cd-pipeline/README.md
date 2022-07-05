@@ -3757,7 +3757,7 @@ nano /home/ec2-user/.m2/settings.xml
 </settings>
 ```
 
-- ``Delete`` .m2 repository file under ``/home/ec2-user/.m2/repository`` to see if dependies download from the Nexus server.
+- Delete `repository` folder under `/home/ec2-user/.m2` to see if dependies download from the Nexus server.
 
 - run the mvn command to see if it is worked.
 
@@ -4314,7 +4314,7 @@ kubectl get ns
   * Install the `Custom Resource Definition` resources separately
 
   ```bash
-  kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v1.7.1/cert-manager.crds.yaml
+  kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.8.2/cert-manager.crds.yaml
   ```
 
   * Install the cert-manager Helm chart
@@ -4323,7 +4323,7 @@ kubectl get ns
   helm install \
   cert-manager jetstack/cert-manager \
   --namespace cert-manager \
-  --version v1.7.1
+  --version v1.8.2
   ```
 
   * Verify that the cert-manager is deployed correctly.

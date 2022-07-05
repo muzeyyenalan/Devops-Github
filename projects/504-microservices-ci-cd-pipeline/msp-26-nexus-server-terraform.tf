@@ -42,12 +42,12 @@ resource "null_resource" "forpasswd" {
   depends_on = [aws_instance.tf-nexus-server]
 
   provisioner "local-exec" {
-    command = "sleep 3m"
+    command = "aws ec2 wait instance-status-ok --instance-ids ${aws_instance.tf-nexus-server.id}"
   }
 
   # Do not forget to define your key file path correctly!
   provisioner "local-exec" {
-    command = "ssh -i ~/.ssh/tyler-team.pem -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ec2-user@${aws_instance.tf-nexus-server.public_ip} 'docker cp nexus:/nexus-data/admin.password  admin.password & cat /home/ec2-user/admin.password' > initialpasswd.txt"
+    command = "ssh -i ~/.ssh/tyler-team.pem -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ec2-user@${aws_instance.tf-nexus-server.public_ip} 'docker cp nexus:/nexus-data/admin.password  admin.password && cat /home/ec2-user/admin.password' > initialpasswd.txt"
   }
 }
 
