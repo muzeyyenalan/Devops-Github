@@ -4129,9 +4129,9 @@ docker push "${IMAGE_TAG_PROMETHEUS_SERVICE}"
   - Initial database name: petclinic
 ```
 
-- Delete mysql-server-deployment.yaml file from k8s/petclinic_chart/templates folder.
+- Delete `mysql-server-deployment.yaml` file from `k8s/petclinic_chart/templates` folder.
 
-- Update k8s/petclinic_chart/templates/mysql-server-service.yaml as below.
+- Update `k8s/petclinic_chart/templates/mysql-server-service.yaml` as below.
 
 ```yaml
 apiVersion: v1
