@@ -1,4 +1,4 @@
-MSP-1:
+MSP-1: Used Commands
 ------
 * sudo usermod -a -G <group-name> <user-name>
     |--> -a : append
@@ -16,7 +16,7 @@ MSP-2:
 * git push --set-upstream origin dev == git push -u origin dev
 
 * git remote -v 
-    |--> gives the remote origin address
+    |--> gives the remote origin address 
 
 * git remote rm origin 
     |--> removes the origin address from local repository. 
